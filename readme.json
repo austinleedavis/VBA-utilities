@@ -89,6 +89,6 @@
 {"name":"flare.TE1SFVS8","imports":["flare.BP0JFJCK","flare.BP0JFJCK","flare.CD0VFWK4","flare.CD0VFWK4","flare.KV1CF9K6","flare.KV1CF9K6","flare.LA1SFBGS","flare.LA1SFBGS","flare.LK1MFNFV","flare.LK1MFNFV","flare.PE1RFDZ5","flare.PE1RFDZ5","flare.S73IFLX5","flare.S73IFLX5","flare.S73IFLX5","flare.WE0JFP24","flare.WE0JFP24"]},
 {"name":"flare.WE1SFKDK","imports":["flare.HL30FPZZ","flare.HL30FPZZ","flare.KF0JFCC2","flare.KF0JFCC2","flare.LA1SFMB1","flare.LA1SFMB1","flare.SF1SFCCN","flare.SF1SFCCN","flare.WE0JFP24","flare.WE0JFP24"]},
 {"name":"flare.WE1SFM74","imports":["flare.S73IFLX5","flare.S73IFLX5"]},
-{"name":"flare.WE1SFKDK","imports":["HL30FPZZ","HL30FPZZ","KF0JFCC2","KF0JFCC2","LA1SFMB1","LA1SFMB1","SF1SFCCN","SF1SFCCN","WE0JFP24","WE0JFP24","WE1SFKDK","WE1SFKDK"]},
-{"name":"flare.WE1SFM74","imports":["S73IFLX5","S73IFLX5","WE1SFM74","WE1SFM74"]}
+{"name":"flare.WE1SFKDK","imports":["flare.HL30FPZZ","flare.HL30FPZZ","flare.KF0JFCC2","flare.KF0JFCC2","flare.LA1SFMB1","flare.LA1SFMB1","flare.SF1SFCCN","flare.SF1SFCCN","flare.WE0JFP24","flare.WE0JFP24","flare.WE1SFKDK","flare.WE1SFKDK"]},
+{"name":"flare.WE1SFM74","imports":["flare.S73IFLX5","flare.S73IFLX5","flare.WE1SFM74","flare.WE1SFM74"]}
 ]
