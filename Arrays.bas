@@ -5,7 +5,7 @@ Option Base 0
 
 'Sorts the array using the MergeSort algorithm (follows the pseudocode on Wikipedia
 'O(n*log(n)) time; O(n) space
-Public Sub MergeSort(A() As Variant)
+Public Sub mergeSort(A() As Variant)
     Dim B() As Variant
     ReDim B(0 To UBound(A))
     TopDownSplitMerge A, 0, UBound(A), B
