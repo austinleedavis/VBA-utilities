@@ -9,77 +9,132 @@ Private Const C_ERR_NO_ERROR = 0&
 Private Const C_ERR_SUBSCRIPT_OUT_OF_RANGE = 9&
 Private Const C_ERR_ARRAY_IS_FIXED_OR_LOCKED = 10&
 
-'Sorts the array using the MergeSort algorithm (follows the pseudocode on Wikipedia
-'O(n*log(n)) time; O(n) space
-Public Sub mergeSort(a() As Variant)
+' @description Sorts A in-place using a simple sorting algorithm that builds the final sorted array one item at a time. It provides several advantages: it is efficient for (quite) small data sets and those that are substantially sorted (the time complexity is O(nk) when each element in the input is no more than k places away from its sorted position). See https://en.wikipedia.org/wiki/Insertion_sort for more information
+' @param A a 1-dimensional array of numerical values
+' @return returns the sorted array A
+Public Function insertionSort(A As Variant) As Variant
+    Debug.Assert NumberOfArrayDimensions(A) = 1
+    Debug.Assert IsArrayAllNumeric(A)
+    
+    Dim i As Long, j As Long, lb As Long, ub As Long, length As Long, x As Variant
+    lb = LBound(A)
+    ub = UBound(A)
+    length = ub - lb + 1
+    
+    i = lb + 1
+    Do While i < length
+        x = A(i)
+        j = i - 1
+        While j >= lb And A(j) > x
+            A(j + 1) = A(j)
+            j = j - 1
+            If j < lb Then
+                GoTo end_of_while
+            End If
+        Wend
+end_of_while:
+        A(j + 1) = x
+        i = i + 1
+    Loop
+    insertionSort = A
+End Function
+
+'Private Sub speedTestDemo()
+'    Dim blah As Variant, i As Long, j As Long, run As Long, t As Timer, numRuns As Long, size As Long
+'    numRuns = 50
+'    size = 5000
+'    ReDim blah(size)
+'    Set t = New Timer
+'    t.StartCounter
+'    For run = 1 To numRuns
+'        For i = 0 To size
+'            blah(i) = Rnd()
+'        Next i
+'
+'        Arrays.insertionSort blah
+'
+'        For i = 1 To size
+'            If blah(i) < blah(i - 1) Then
+'                Debug.Print "FAIL! on run:" & run
+'                For j = 0 To size
+'                    Debug.Print blah(j)
+'                Next j
+'                Exit Sub
+'            End If
+'        Next i
+'    Next run
+'    Debug.Print "done! " & Now() & " time elapsed: " & t.TimeElapsed / numRuns
+'
+'End Sub
+
+' @description Sorts and returns the array using the MergeSort algorithm (follows the pseudocode on Wikipedia). Performs sort in O(n*log(n)) time using O(n) space.
+' @param A a 1-dimensional array of numerical values
+' @return returns the array A after sorting its elements in-place
+Public Function mergeSort(ByRef A As Variant) As Variant
+    Debug.Assert NumberOfArrayDimensions(A) = 1
+    Debug.Assert IsArrayAllNumeric(A)
+    
     Dim B() As Variant
-    ReDim B(0 To UBound(a))
-    TopDownSplitMerge a, 0, UBound(a), B
-End Sub
+    ReDim B(LBound(A) To UBound(A))
+    MergeSort_TopDownSplitMerge A, LBound(A), UBound(A), B
+    mergeSort = A
+End Function
 
 'Used by MergeSortAlgorithm
-Private Sub TopDownSplitMerge(a() As Variant, iBegin As Long, iEnd As Long, B() As Variant)
+Private Sub MergeSort_TopDownSplitMerge(ByRef A As Variant, iBegin As Long, iEnd As Long, ByRef B As Variant)
+    Dim temp As Variant
     
-    If iEnd - iBegin < 2 Then ' if run size = 1
+    If iEnd = iBegin Then ' if run size = 1
         Exit Sub ' consider it sorted
+    End If
+    
+    If iEnd - iBegin = 1 Then 'if there are 2 exatly elements
+        If A(iEnd) < A(iBegin) Then 'swap them if they are out of order
+            temp = A(iEnd)
+            A(iEnd) = A(iBegin)
+            A(iBegin) = temp
+        End If
+        Exit Sub
     End If
     
     ' recursively split runs into two halves until run size = 1
     ' then merge them and return back up the call chain
     Dim iMiddle As Long
     iMiddle = (iEnd + iBegin) / 2 ' iMiddle = mid point
-    TopDownSplitMerge a, iBegin, iMiddle, B 'split-merge left half
-    TopDownSplitMerge a, iMiddle, iEnd, B ' split-merge right half
-    TopDownMerge a, iBegin, iMiddle, iEnd, B ' merge the two half runs
-    Copy B, iBegin, a, iBegin, iEnd - iBegin 'copy the merged runs back to A
+    MergeSort_TopDownSplitMerge A, iBegin, iMiddle, B 'split-merge left half
+    MergeSort_TopDownSplitMerge A, iMiddle, iEnd, B ' split-merge right half
+    MergeSort_TopDownMerge A, iBegin, iMiddle, iEnd, B ' merge the two half runs
+    MergeSort_Copy B, iBegin, A, iBegin, iEnd - iBegin 'copy the merged runs back to A
 End Sub
 
 'Used by MergeSort algirtm
-Private Sub TopDownMerge(a() As Variant, iBegin As Long, iMiddle As Long, iEnd As Long, B() As Variant)
+Private Sub MergeSort_TopDownMerge(ByRef A As Variant, iBegin As Long, iMiddle As Long, iEnd As Long, ByRef B As Variant)
     'left half is A[iBegin:iMiddle-1]
     'right half is A[iMiddle:iEnd-1]
     Dim i As Long
     Dim j As Long
     Dim k As Long
+    
     i = iBegin
     j = iMiddle
     
     'while there are elements in the left or right runs...
     For k = iBegin To iEnd Step 1
         'If left run head exists and is <= existing right run head.
-        If i < iMiddle And (j >= iEnd Or a(i) <= a(j)) Then
-            B(k) = a(i)
+        
+        If i < iMiddle And (j >= iEnd Or A(i) <= A(j)) Then
+            B(k) = A(i)
             i = i + 1
         Else
-            B(k) = a(j)
+            B(k) = A(j)
             j = j + 1
         End If
     Next k
 End Sub
 
-'Used by MergeSort algorithm
-Private Sub CopyRange(source() As Variant, iBegin As Long, iEnd As Long, dest() As Variant)
-    Dim k As Long
-    For k = iBegin To iEnd Step 1
-        destination(k) = source(k)
-    Next k
-End Sub
-
-'Copies an array from the specified source array, beginning at the specified position, to the specified position in the destination array
-Public Sub Copy(ByRef src() As Variant, srcPos As Long, ByRef dst() As Variant, dstPos As Long, length As Long)
+'Used by mergesort algorithm
+Private Sub MergeSort_Copy(ByRef src As Variant, srcPos As Long, ByRef dst As Variant, dstPos As Long, length As Long)
     
-    'Check if all offsets and lengths are non negative
-    If srcPos < 0 Or dstPos < 0 Or length < 0 Then
-        err.Raise 9, , "negative value supplied"
-    End If
-     
-    'Check if ranges are valid
-    If length + srcPos > UBound(src) Then
-        err.Raise 9, , "Not enough elements to copy, src+length: " & srcPos + length & ", UBound(src): " & UBound(src)
-    End If
-    If length + dstPos > UBound(dst) Then
-        err.Raise 9, , "Not enough room in destination array. dstPos+length: " & dstPos + length & ", UBound(dst): " & UBound(dst)
-    End If
     Dim i As Long
     i = 0
     'copy src elements to dst
@@ -93,11 +148,11 @@ End Sub
 'Cleanly prints arrays with up to 3 dimensions
 Public Function toString(arr) As String
     
-    Dim slice As Variant, a As Application, dimCount As Long, i As Long, j As Long, k As Long, l As Long, ub1 As Long, ub2 As Long, ub3 As Long, lb1 As Long, lb2 As Long, lb3 As Long
+    Dim slice As Variant, A As Application, dimCount As Long, i As Long, j As Long, k As Long, l As Long, ub1 As Long, ub2 As Long, ub3 As Long, lb1 As Long, lb2 As Long, lb3 As Long
     dimCount = NumberOfArrayDimensions(arr)
     Debug.Assert dimCount <= 3 And dimCount > 0
        
-    Set a = Application
+    Set A = Application
     
     If dimCount = 1 Then
         toString = "[" & Join(arr, ", ") & "]"
@@ -106,8 +161,8 @@ Public Function toString(arr) As String
         lb1 = LBound(arr, 1)
         ub1 = UBound(arr, 1)
         For i = lb1 To ub1
-            slice = a.Index(arr, i, 0)
-            toString = toString & "[" & Join(slice, ", ") & "] "
+            slice = A.index(arr, i, 0)
+            toString = toString & vbCrLf & "[" & Join(slice, ", ") & "] "
         Next i
         toString = toString & "]"
     
@@ -1231,7 +1286,7 @@ Public Function DataTypeOfArray(arr As Variant) As VbVarType
     ' Returns -1 if Arr is not an array.
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Dim Element As Variant
+    Dim element As Variant
     Dim NumDimensions As Long
     
     ' If Arr is not an array, return
@@ -1258,25 +1313,25 @@ Public Function DataTypeOfArray(arr As Variant) As VbVarType
                 DataTypeOfArray = vbObject
                 Exit Function
             End If
-            Element = arr(LBound(arr))
+            element = arr(LBound(arr))
         Else
             If IsObject(arr(LBound(arr), 1)) = True Then
                 DataTypeOfArray = vbObject
                 Exit Function
             End If
-            Element = arr(LBound(arr), 1)
+            element = arr(LBound(arr), 1)
         End If
         ' if we were passed an array of arrays, IsArray(Element) will
         ' be true. Therefore, return vbArray. If IsArray(Element) is false,
         ' we weren't passed an array of arrays, so simply return the data type of
         ' Element.
-        If IsArray(Element) = True Then
+        If IsArray(element) = True Then
             DataTypeOfArray = vbArray
         Else
-            If VarType(Element) = vbEmpty Then
+            If VarType(element) = vbEmpty Then
                 DataTypeOfArray = vbVariant
             Else
-                DataTypeOfArray = VarType(Element)
+                DataTypeOfArray = VarType(element)
             End If
         End If
     End If
@@ -1428,8 +1483,8 @@ Public Function FirstNonEmptyStringIndexInArray(InputArray As Variant) As Long
 End Function
     
     
-    Public Function InsertElementIntoArray(InputArray As Variant, Index As Long, _
-        Value As Variant) As Boolean
+    Public Function InsertElementIntoArray(InputArray As Variant, index As Long, _
+        value As Variant) As Boolean
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' InsertElementIntoArray
     ' This function inserts an element with a value of Value into InputArray at locatation Index.
@@ -1483,7 +1538,7 @@ End Function
     ' InsertElementIntoArray(Arr,UBound(Arr)+1,123)
     ' will insert 123 at the end of the array.
     '''''''''''''''''''''''''''''''''''''''''
-    If (Index < LBound(InputArray)) Or (Index > UBound(InputArray) + 1) Then
+    If (index < LBound(InputArray)) Or (index > UBound(InputArray) + 1) Then
         Exit Function
     End If
     
@@ -1501,7 +1556,7 @@ End Function
     '''''''''''''''''''''''''''''''''''''''''''''''
     On Error Resume Next
     err.clear
-    InputArray(UBound(InputArray)) = Value
+    InputArray(UBound(InputArray)) = value
     If err.Number <> 0 Then
         ''''''''''''''''''''''''''''''''''''''
         ' An error occurred, most likely
@@ -1515,14 +1570,14 @@ End Function
     '''''''''''''''''''''''''''''''''''''''''''''
     ' Shift everything to the right.
     '''''''''''''''''''''''''''''''''''''''''''''
-    For Ndx = UBound(InputArray) To Index + 1 Step -1
+    For Ndx = UBound(InputArray) To index + 1 Step -1
         InputArray(Ndx) = InputArray(Ndx - 1)
     Next Ndx
     
     '''''''''''''''''''''''''''''''''''''''''''''
     ' Insert Value at Index
     '''''''''''''''''''''''''''''''''''''''''''''
-    InputArray(Index) = Value
+    InputArray(index) = value
     
        
     InsertElementIntoArray = True
@@ -1984,7 +2039,7 @@ Public Function IsNumericDataType(TestVar As Variant) As Boolean
     ' IsNumeric should only be used to test strings for numeric content
     ' when converting a string value to a numeric variable.
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim Element As Variant
+    Dim element As Variant
     Dim NumDims As Long
     If IsArray(TestVar) = True Then
         NumDims = NumberOfArrayDimensions(arr:=TestVar)
@@ -1997,8 +2052,8 @@ Public Function IsNumericDataType(TestVar As Variant) As Boolean
             Exit Function
         End If
         If IsArrayAllocated(arr:=TestVar) = True Then
-            Element = TestVar(LBound(TestVar))
-            Select Case VarType(Element)
+            element = TestVar(LBound(TestVar))
+            Select Case VarType(element)
                 Case vbCurrency, vbDecimal, vbDouble, vbInteger, vbLong, vbSingle
                     IsNumericDataType = True
                     Exit Function
@@ -2238,7 +2293,7 @@ Public Function MoveEmptyStringsToEndOfArray(InputArray As Variant) As Boolean
     '       IsArrayAllocated
     
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim Temp As String
+    Dim temp As String
     Dim Ndx As Long
     Dim Ndx2 As Long
     Dim NonEmptyNdx As Long
@@ -2427,7 +2482,7 @@ Public Function ReverseArrayInPlace(InputArray As Variant, _
 ' on arrays of objects. Use ReverseArrayOfObjectsInPlace to reverse an array of objects.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Dim Temp As Variant
+    Dim temp As Variant
     Dim Ndx As Long
     Dim Ndx2 As Long
     
@@ -2480,9 +2535,9 @@ Public Function ReverseArrayInPlace(InputArray As Variant, _
     ''''''''''''''''''''''''''''''''''''''
     For Ndx = LBound(InputArray) To ((UBound(InputArray) - LBound(InputArray) + 1) \ 2)
         'swap the elements
-        Temp = InputArray(Ndx)
+        temp = InputArray(Ndx)
         InputArray(Ndx) = InputArray(Ndx2)
-        InputArray(Ndx2) = Temp
+        InputArray(Ndx2) = temp
         ' decrement the upper index
         Ndx2 = Ndx2 - 1
     Next Ndx
@@ -2506,7 +2561,7 @@ Public Function ReverseArrayOfObjectsInPlace(InputArray As Variant, _
 ' will occur if an element of the array is not an object.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Dim Temp As Variant
+    Dim temp As Variant
     Dim Ndx As Long
     Dim Ndx2 As Long
     
@@ -2573,9 +2628,9 @@ Public Function ReverseArrayOfObjectsInPlace(InputArray As Variant, _
     ' the midpoint of InputArray
     ''''''''''''''''''''''''''''''''''''''
     For Ndx = LBound(InputArray) To ((UBound(InputArray) - LBound(InputArray) + 1) \ 2)
-        Set Temp = InputArray(Ndx)
+        Set temp = InputArray(Ndx)
         Set InputArray(Ndx) = InputArray(Ndx2)
-        Set InputArray(Ndx2) = Temp
+        Set InputArray(Ndx2) = temp
         ' decrement the upper index
         Ndx2 = Ndx2 - 1
     Next Ndx
@@ -3031,8 +3086,8 @@ Public Function VectorsToArray(arr As Variant, ParamArray Vectors()) As Boolean
     Dim Vector As Variant
     Dim VectorNdx As Long
     Dim NumElements As Long
-    Dim NumRows As Long
-    Dim NumCols As Long
+    Dim numRows As Long
+    Dim numCols As Long
     Dim RowNdx As Long
     Dim ColNdx As Long
     Dim VType As VbVarType
@@ -3099,9 +3154,9 @@ Public Function VectorsToArray(arr As Variant, ParamArray Vectors()) As Boolean
         ' NumCols, set NumCols to the
         ' new, larger, value.
         '''''''''''''''''''''''''''''''''
-        NumRows = NumRows + 1
-        If NumCols < UBound(Vector) - LBound(Vector) + 1 Then
-            NumCols = UBound(Vector) - LBound(Vector) + 1
+        numRows = numRows + 1
+        If numCols < UBound(Vector) - LBound(Vector) + 1 Then
+            numCols = UBound(Vector) - LBound(Vector) + 1
         End If
     Next Vector
     ''''''''''''''''''''''''''''''''''''''''''''
@@ -3110,15 +3165,15 @@ Public Function VectorsToArray(arr As Variant, ParamArray Vectors()) As Boolean
     ' of the LBound of the original Arr and
     ' regardless of the LBounds of the Vectors.
     ''''''''''''''''''''''''''''''''''''''''''''
-    ReDim arr(0 To NumRows - 1, 0 To NumCols - 1)
+    ReDim arr(0 To numRows - 1, 0 To numCols - 1)
     
     '''''''''''''''''''''''''''''''
     ' Loop row-by-row.
-    For RowNdx = 0 To NumRows - 1
+    For RowNdx = 0 To numRows - 1
         ''''''''''''''''''''''''''''''''
         ' Loop through the columns.
         ''''''''''''''''''''''''''''''''
-        For ColNdx = 0 To NumCols - 1
+        For ColNdx = 0 To numCols - 1
             ''''''''''''''''''''''''''''
             ' Set Vector (a Variant) to
             ' the Vectors(RowNdx) array.
@@ -3353,7 +3408,7 @@ Public Function CombineTwoDArrays(Arr1 As Variant, _
     Dim result() As Variant
     Dim ResultTrans() As Variant
     
-    Dim V As Variant
+    Dim v As Variant
     
     
     '''''''''''''''''''''''''''''''
@@ -3452,8 +3507,8 @@ Public Function CombineTwoDArrays(Arr1 As Variant, _
         For RowNdx1 = LBound(Arr1, 1) To UBound(Arr1, 1)
             RowNdxResult = RowNdxResult + 1
             For ColNdx1 = LBound(Arr1, 2) To UBound(Arr1, 2)
-                V = Arr1(RowNdx1, ColNdx1)
-                result(RowNdxResult, ColNdx1) = V
+                v = Arr1(RowNdx1, ColNdx1)
+                result(RowNdxResult, ColNdx1) = v
             Next ColNdx1
         Next RowNdx1
     
@@ -3463,8 +3518,8 @@ Public Function CombineTwoDArrays(Arr1 As Variant, _
         For RowNdx2 = LBound(Arr2, 1) To UBound(Arr2, 1)
             RowNdxResult = RowNdxResult + 1
             For ColNdx2 = LBound(Arr2, 2) To UBound(Arr2, 2)
-                V = Arr2(RowNdx2, ColNdx2)
-                result(RowNdxResult, ColNdx2) = V
+                v = Arr2(RowNdx2, ColNdx2)
+                result(RowNdxResult, ColNdx2) = v
             Next ColNdx2
         Next RowNdx2
        
@@ -3515,8 +3570,8 @@ Function ExpandArray(arr As Variant, WhichDim As Long, AdditionalElements As Lon
     Dim ColNdx As Long
     Dim ResultRowNdx As Long
     Dim ResultColNdx As Long
-    Dim NumRows As Long
-    Dim NumCols As Long
+    Dim numRows As Long
+    Dim numCols As Long
     Dim NewUBound As Long
     
     Const ROWS_ As Long = 1
@@ -3561,8 +3616,8 @@ Function ExpandArray(arr As Variant, WhichDim As Long, AdditionalElements As Lon
         Exit Function
     End If
        
-    NumRows = UBound(arr, 1) - LBound(arr, 1) + 1
-    NumCols = UBound(arr, 2) - LBound(arr, 2) + 1
+    numRows = UBound(arr, 1) - LBound(arr, 1) + 1
+    numCols = UBound(arr, 2) - LBound(arr, 2) + 1
       
     If WhichDim = ROWS_ Then
         '''''''''''''''
@@ -3622,7 +3677,7 @@ Function SwapArrayRows(arr As Variant, Row1 As Long, Row2 As Long) As Variant
 ' This function returns an array based on Arr with Row1 and Row2 swapped.
 ' It returns the result array or NULL if an error occurred.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim V As Variant
+    Dim v As Variant
     Dim result As Variant
     Dim RowNdx As Long
     Dim ColNdx As Long
@@ -3670,14 +3725,14 @@ Function SwapArrayRows(arr As Variant, Row1 As Long, Row2 As Long) As Variant
     '''''''''''''''''''''''''''''''''''''''''
     ' Redim V to the number of columns.
     '''''''''''''''''''''''''''''''''''''''''
-    ReDim V(LBound(arr, 2) To UBound(arr, 2))
+    ReDim v(LBound(arr, 2) To UBound(arr, 2))
     '''''''''''''''''''''''''''''''''''''''''
     ' Put Row1 in V
     '''''''''''''''''''''''''''''''''''''''''
     For ColNdx = LBound(arr, 2) To UBound(arr, 2)
-        V(ColNdx) = arr(Row1, ColNdx)
+        v(ColNdx) = arr(Row1, ColNdx)
         result(Row1, ColNdx) = arr(Row2, ColNdx)
-        result(Row2, ColNdx) = V(ColNdx)
+        result(Row2, ColNdx) = v(ColNdx)
     Next ColNdx
     
     SwapArrayRows = result
@@ -3691,7 +3746,7 @@ Function SwapArrayColumns(arr As Variant, Col1 As Long, Col2 As Long) As Variant
 ' This function returns an array based on Arr with Col1 and Col2 swapped.
 ' It returns the result array or NULL if an error occurred.
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-    Dim V As Variant
+    Dim v As Variant
     Dim result As Variant
     Dim RowNdx As Long
     Dim ColNdx As Long
@@ -3739,14 +3794,14 @@ Function SwapArrayColumns(arr As Variant, Col1 As Long, Col2 As Long) As Variant
     '''''''''''''''''''''''''''''''''''''''''
     ' Redim V to the number of columns.
     '''''''''''''''''''''''''''''''''''''''''
-    ReDim V(LBound(arr, 1) To UBound(arr, 1))
+    ReDim v(LBound(arr, 1) To UBound(arr, 1))
     '''''''''''''''''''''''''''''''''''''''''
     ' Put Col2 in V
     '''''''''''''''''''''''''''''''''''''''''
     For RowNdx = LBound(arr, 1) To UBound(arr, 1)
-        V(RowNdx) = arr(RowNdx, Col1)
+        v(RowNdx) = arr(RowNdx, Col1)
         result(RowNdx, Col1) = arr(RowNdx, Col2)
-        result(RowNdx, Col2) = V(RowNdx)
+        result(RowNdx, Col2) = v(RowNdx)
     Next RowNdx
     
     SwapArrayColumns = result
