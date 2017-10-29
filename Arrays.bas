@@ -9,12 +9,50 @@ Private Const C_ERR_NO_ERROR = 0&
 Private Const C_ERR_SUBSCRIPT_OUT_OF_RANGE = 9&
 Private Const C_ERR_ARRAY_IS_FIXED_OR_LOCKED = 10&
 
+
+' @description Performs a binary search for the target value. The input array must be sorted to perform binary search.
+' @param A a pre-sorted, 1-dimensional array. This array can be in descending order if the `descending` parameter is also set to TRUE; otherwise, A must be sorted in ascending order.
+' @param descending (Optional) default to FALSE indicating the array is sorted in ascending order. Use TRUE to indicate array is sorted in ascending order.
+' @return returns True if the array contains the target value, returns false otherwise
+Public Function binarySearch(A As Variant, target As Variant, Optional descending As Boolean = False) As Boolean
+    Debug.Assert Arrays.IsArraySorted(A, descending)
+
+    Dim min As Long, max As Long, guess As Long
+    min = LBound(A)
+    max = UBound(A)
+    
+    Do While min <= max
+        
+        guess = min + ((max - min) / 2)
+        
+        If A(guess) = target Then
+            binarySearch = guess
+            Exit Function
+        End If
+        
+        If descending Then
+            If A(guess) < target Then
+                max = guess - 1
+            Else
+                min = guess + 1
+            End If
+        Else
+            If A(guess) < target Then
+                min = guess + 1
+            Else
+                max = guess - 1
+            End If
+        End If
+    Loop
+    
+End Function
+
+
 ' @description Sorts A in-place using a simple sorting algorithm that builds the final sorted array one item at a time. It provides several advantages: it is efficient for (quite) small data sets and those that are substantially sorted (the time complexity is O(nk) when each element in the input is no more than k places away from its sorted position). See https://en.wikipedia.org/wiki/Insertion_sort for more information
-' @param A a 1-dimensional array of numerical values
+' @param A a 1-dimensional array
 ' @return returns the sorted array A
 Public Function insertionSort(A As Variant) As Variant
     Debug.Assert NumberOfArrayDimensions(A) = 1
-    Debug.Assert IsArrayAllNumeric(A)
     
     Dim i As Long, j As Long, lb As Long, ub As Long, length As Long, x As Variant
     lb = LBound(A)
@@ -22,7 +60,7 @@ Public Function insertionSort(A As Variant) As Variant
     length = ub - lb + 1
     
     i = lb + 1
-    Do While i < length
+    Do While i < ub
         x = A(i)
         j = i - 1
         While j >= lb And A(j) > x
@@ -42,7 +80,7 @@ End Function
 'Private Sub speedTestDemo()
 '    Dim blah As Variant, i As Long, j As Long, run As Long, t As Timer, numRuns As Long, size As Long
 '    numRuns = 50
-'    size = 5000
+'    size = 500
 '    ReDim blah(size)
 '    Set t = New Timer
 '    t.StartCounter
@@ -51,7 +89,7 @@ End Function
 '            blah(i) = Rnd()
 '        Next i
 '
-'        Arrays.insertionSort blah
+'        Arrays.mergeSort blah
 '
 '        For i = 1 To size
 '            If blah(i) < blah(i - 1) Then
@@ -68,20 +106,19 @@ End Function
 'End Sub
 
 ' @description Sorts and returns the array using the MergeSort algorithm (follows the pseudocode on Wikipedia). Performs sort in O(n*log(n)) time using O(n) space.
-' @param A a 1-dimensional array of numerical values
+' @param A a 1-dimensional array
 ' @return returns the array A after sorting its elements in-place
 Public Function mergeSort(ByRef A As Variant) As Variant
     Debug.Assert NumberOfArrayDimensions(A) = 1
-    Debug.Assert IsArrayAllNumeric(A)
     
-    Dim B() As Variant
-    ReDim B(LBound(A) To UBound(A))
-    MergeSort_TopDownSplitMerge A, LBound(A), UBound(A), B
+    Dim b() As Variant
+    ReDim b(LBound(A) To UBound(A))
+    MergeSort_TopDownSplitMerge A, LBound(A), UBound(A), b
     mergeSort = A
 End Function
 
 'Used by MergeSortAlgorithm
-Private Sub MergeSort_TopDownSplitMerge(ByRef A As Variant, iBegin As Long, iEnd As Long, ByRef B As Variant)
+Private Sub MergeSort_TopDownSplitMerge(ByRef A As Variant, iBegin As Long, iEnd As Long, ByRef b As Variant)
     Dim temp As Variant
     
     If iEnd = iBegin Then ' if run size = 1
@@ -101,14 +138,14 @@ Private Sub MergeSort_TopDownSplitMerge(ByRef A As Variant, iBegin As Long, iEnd
     ' then merge them and return back up the call chain
     Dim iMiddle As Long
     iMiddle = (iEnd + iBegin) / 2 ' iMiddle = mid point
-    MergeSort_TopDownSplitMerge A, iBegin, iMiddle, B 'split-merge left half
-    MergeSort_TopDownSplitMerge A, iMiddle, iEnd, B ' split-merge right half
-    MergeSort_TopDownMerge A, iBegin, iMiddle, iEnd, B ' merge the two half runs
-    MergeSort_Copy B, iBegin, A, iBegin, iEnd - iBegin 'copy the merged runs back to A
+    MergeSort_TopDownSplitMerge A, iBegin, iMiddle, b 'split-merge left half
+    MergeSort_TopDownSplitMerge A, iMiddle, iEnd, b ' split-merge right half
+    MergeSort_TopDownMerge A, iBegin, iMiddle, iEnd, b ' merge the two half runs
+    MergeSort_Copy b, iBegin, A, iBegin, iEnd - iBegin 'copy the merged runs back to A
 End Sub
 
 'Used by MergeSort algirtm
-Private Sub MergeSort_TopDownMerge(ByRef A As Variant, iBegin As Long, iMiddle As Long, iEnd As Long, ByRef B As Variant)
+Private Sub MergeSort_TopDownMerge(ByRef A As Variant, iBegin As Long, iMiddle As Long, iEnd As Long, ByRef b As Variant)
     'left half is A[iBegin:iMiddle-1]
     'right half is A[iMiddle:iEnd-1]
     Dim i As Long
@@ -123,10 +160,10 @@ Private Sub MergeSort_TopDownMerge(ByRef A As Variant, iBegin As Long, iMiddle A
         'If left run head exists and is <= existing right run head.
         
         If i < iMiddle And (j >= iEnd Or A(i) <= A(j)) Then
-            B(k) = A(i)
+            b(k) = A(i)
             i = i + 1
         Else
-            B(k) = A(j)
+            b(k) = A(j)
             j = j + 1
         End If
     Next k
@@ -3217,7 +3254,7 @@ Public Function VectorsToArray(arr As Variant, ParamArray Vectors()) As Boolean
     
 End Function
 Public Function IsArraySorted(TestArray As Variant, _
-    Optional Descending As Boolean = False) As Variant
+    Optional descending As Boolean = False) As Variant
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 ' IsArraySorted
 ' This function determines whether a single-dimensional array is sorted. Because
@@ -3268,7 +3305,7 @@ Public Function IsArraySorted(TestArray As Variant, _
     ' below, we know that the array is
     ' unsorted.
     '''''''''''''''''''''''''''''''''''''''''''''
-    If Descending = True Then
+    If descending = True Then
         StrCompResultFail = -1
         NumericResultFail = False
     Else
