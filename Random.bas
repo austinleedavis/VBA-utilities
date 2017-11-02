@@ -77,11 +77,11 @@ End Function
 
 'returns a random value drawn from a gaussian distribution with the given mean and standard devision.
 'If mean and vriance are not provided, assumes the standard normal distribution
-Public Function NormDistVBA(x As Double, Optional mean As Double = 0, Optional standard_Dev As Double = 1) As Double
+Public Function NormDistVBA(x As Double, Optional mean As Double = 0, Optional standard_dev As Double = 1) As Double
     Dim expNum As Double, expDenom As Double, denom As Double
     expNum = -((x - mean) * (x - mean))
-    expDenom = 2 * standard_Dev * standard_Dev
-    denom = standard_Dev * Sqr(2 * PI)
+    expDenom = 2 * standard_dev * standard_dev
+    denom = standard_dev * Sqr(2 * PI)
     NormDistVBA = (1 / denom) * Exp(expNum / expDenom)
 End Function
 

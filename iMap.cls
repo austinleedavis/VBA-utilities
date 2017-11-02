@@ -19,7 +19,7 @@ End Sub
 'computeIfAbsent
 'computeIfPresent
 
-Public Function containsKey(key As Variant) As Boolean
+Public Function containsKey(Key As Variant) As Boolean
 'interface method
 End Function
 
@@ -37,11 +37,11 @@ End Function
 
 'foreach
 
-Public Function getByKey(key As Variant) As Variant
+Public Function getByKey(Key As Variant) As Variant
 'interface method
 End Function
 
-Public Function getOrDefault(key As Variant, defaultValue As Variant) As Variant
+Public Function getOrDefault(Key As Variant, DefaultValue As Variant) As Variant
 'interface method
 End Function
 
@@ -51,7 +51,7 @@ End Function
 
 'merge
 
-Public Function putKV(key As Variant, value As Variant) As Variant
+Public Function putKV(Key As Variant, value As Variant) As Variant
 'interface method
 End Function
 
@@ -59,23 +59,23 @@ Public Sub putAll(m As iMap)
 'interface method
 End Sub
 
-Public Function putIfAbsent(key As Variant, value As Variant) As Variant
+Public Function putIfAbsent(Key As Variant, value As Variant) As Variant
 'interface method
 End Function
 
-Public Function remove(key As Variant) As Variant
+Public Function remove(Key As Variant) As Variant
 'interface method
 End Function
 
-Public Function removeIfValueMatch(key As Variant, value As Variant) As Boolean
+Public Function removeIfValueMatch(Key As Variant, value As Variant) As Boolean
 'interface method
 End Function
 
-Public Function replace(key As Variant, value As Variant) As Variant
+Public Function replace(Key As Variant, value As Variant) As Variant
 'interface method
 End Function
 
-Public Function replaceIfValueMatch(key As Variant, oldValue As Variant, newValue As Variant) As Boolean
+Public Function replaceIfValueMatch(Key As Variant, oldValue As Variant, newValue As Variant) As Boolean
 'interface method
 End Function
 
