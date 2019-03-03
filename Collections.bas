@@ -26,7 +26,7 @@ Public Function indexOf(value As Variant, col As Collection) As Long
 
     Dim index As Long
     
-    For index = 1 To col.Count Step 1
+    For index = 1 To col.count Step 1
         If col(index) = value Then
             indexOf = index
             Exit Function
@@ -48,14 +48,14 @@ End Function
 
 'Returns an array which exactly matches this collection.
 ' Note: This function is not safe for concurrent modification.
-Public Function ToArray(col As Collection) As Variant
+Public Function toArray(col As Collection) As Variant
     Dim A() As Variant
-    ReDim A(0 To col.Count)
+    ReDim A(0 To col.count)
     Dim i As Long
-    For i = 0 To col.Count - 1
+    For i = 0 To col.count - 1
         A(i) = col(i + 1)
     Next i
-    ToArray = A()
+    toArray = A()
 End Function
 
 'Returns a Collection which exactly matches the given Array
@@ -80,15 +80,15 @@ Public Sub BubbleSort()
     Set cFruit = New Collection
 
     'fill the collection
-   cFruit.add "Mango", "Mango"
+    cFruit.add "Mango", "Mango"
     cFruit.add "Apple", "Apple"
     cFruit.add "Peach", "Peach"
     cFruit.add "Kiwi", "Kiwi"
     cFruit.add "Lime", "Lime"
 
     'Two loops to bubble sort
-   For i = 1 To cFruit.Count - 1
-        For j = i + 1 To cFruit.Count
+   For i = 1 To cFruit.count - 1
+        For j = i + 1 To cFruit.count
             If cFruit(i) > cFruit(j) Then
                 'store the lesser item
                vTemp = cFruit(j)
@@ -113,14 +113,14 @@ End Sub
 'Sorts the array using the MergeSort algorithm (follows the pseudocode on Wikipedia
 'O(n*log(n)) time; O(n) space
 Public Sub mergeSort(A As Collection)
-    Dim B As Collection
-    Set B = New Collection
-    Collections.Copy A, 1, B, 1, A.Count
-    TopDownSplitMerge A, 1, A.Count, B
+    Dim b As Collection
+    Set b = New Collection
+    Collections.Copy A, 1, b, 1, A.count
+    TopDownSplitMerge A, 1, A.count, b
 End Sub
 
 'Used by MergeSortAlgorithm
-Private Sub TopDownSplitMerge(A As Collection, iBegin As Long, iEnd As Long, B As Collection)
+Private Sub TopDownSplitMerge(A As Collection, iBegin As Long, iEnd As Long, b As Collection)
     
     If iEnd - iBegin < 2 Then ' if run size = 1
         Exit Sub ' consider it sorted
@@ -130,14 +130,14 @@ Private Sub TopDownSplitMerge(A As Collection, iBegin As Long, iEnd As Long, B A
     ' then merge them and return back up the call chain
     Dim iMiddle As Long
     iMiddle = (iEnd + iBegin) / 2 ' iMiddle = mid point
-    TopDownSplitMerge A, iBegin, iMiddle, B 'split-merge left half
-    TopDownSplitMerge A, iMiddle, iEnd, B ' split-merge right half
-    TopDownMerge A, iBegin, iMiddle, iEnd, B ' merge the two half runs
-    Copy B, iBegin, A, iBegin, iEnd - iBegin 'copy the merged runs back to A
+    TopDownSplitMerge A, iBegin, iMiddle, b 'split-merge left half
+    TopDownSplitMerge A, iMiddle, iEnd, b ' split-merge right half
+    TopDownMerge A, iBegin, iMiddle, iEnd, b ' merge the two half runs
+    Copy b, iBegin, A, iBegin, iEnd - iBegin 'copy the merged runs back to A
 End Sub
 
 'Used by MergeSort algirtm
-Private Sub TopDownMerge(A As Collection, iBegin As Long, iMiddle As Long, iEnd As Long, B As Collection)
+Private Sub TopDownMerge(A As Collection, iBegin As Long, iMiddle As Long, iEnd As Long, b As Collection)
     'left half is A[iBegin:iMiddle-1]
     'right half is A[iMiddle:iEnd-1]
     Dim i As Long
@@ -150,10 +150,10 @@ Private Sub TopDownMerge(A As Collection, iBegin As Long, iMiddle As Long, iEnd 
     For k = iBegin To iEnd Step 1
         'If left run head exists and is <= existing right run head.
         If i < iMiddle And (j >= iEnd Or A(i) <= A(j)) Then
-            B.add A(i)
+            b.add A(i)
             i = i + 1
         Else
-            B(k) = A(j)
+            b(k) = A(j)
             j = j + 1
         End If
     Next k
@@ -183,11 +183,11 @@ Public Sub Copy(ByRef src As Collection, srcPos As Long, ByRef dst As Collection
     
      
     'Check if ranges are valid
-    If length + srcPos - 1 > src.Count Then
-        err.Raise 9, , "Not enough elements to copy, (src+length - 1): " & srcPos + length - 1 & ", src.Count: " & src.Count
+    If length + srcPos - 1 > src.count Then
+        err.Raise 9, , "Not enough elements to copy, (src+length - 1): " & srcPos + length - 1 & ", src.Count: " & src.count
     End If
-    If length + dstPos - 1 > dst.Count Then
-        err.Raise 9, , "Not enough room in destination array. (dstPos+length - 1): " & dstPos + length - 1 & ", dst.Count: " & dst.Count
+    If length + dstPos - 1 > dst.count Then
+        err.Raise 9, , "Not enough room in destination array. (dstPos+length - 1): " & dstPos + length - 1 & ", dst.Count: " & dst.count
     End If
     Dim i As Long
     i = 0
@@ -196,5 +196,17 @@ Public Sub Copy(ByRef src As Collection, srcPos As Long, ByRef dst As Collection
         dst(dstPos + i) = src(srcPos + i)
         i = i + 1
     Loop
+    
+End Sub
+
+' @description adds all elements of the source Collection to the destination Collection
+' @param dest the destination collection to which the elements will be added
+' @param source the collection from which the elements originate
+Public Sub addAll(dest As Collection, source As Collection)
+    Dim v As Variant
+    
+    For Each v In source
+        dest.add v
+    Next v
     
 End Sub

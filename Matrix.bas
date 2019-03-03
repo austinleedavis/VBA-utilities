@@ -123,18 +123,18 @@ End Function
 ' @param A a m-by-n matrix
 ' @param B a p-by-q matrix
 ' @returns TRUE iff m=p and n=q and a_ij=b_ij for all i,j. Otherwise, returns FALSE.
-Public Function isEqual(A As Variant, B As Variant) As Boolean
+Public Function isEqual(A As Variant, b As Variant) As Boolean
     isEqual = False
     
-    If Not sameSize(A, B) Then
+    If Not sameSize(A, b) Then
         Exit Function
     End If
     
     Dim i As Long, j As Long
     
     For i = 1 To UBound(A)
-        For j = 1 To UBound(B)
-            If (A(i, j) <> B(i, j)) Then
+        For j = 1 To UBound(b)
+            If (A(i, j) <> b(i, j)) Then
                 Exit Function
             End If
         Next j
@@ -147,24 +147,24 @@ End Function
 ' @param A an m-by-n matrix
 ' @param B an n-by-p matrix
 ' @return the n-by-p matrix product AB
-Public Function timesMatrix(A As Variant, B As Variant) As Variant
-    Debug.Assert UBound(A, 2) = UBound(B, 1)
-    multiply = WorksheetFunction.MMult(A, B)
+Public Function timesMatrix(A As Variant, b As Variant) As Variant
+    Debug.Assert UBound(A, 2) = UBound(b, 1)
+    multiply = WorksheetFunction.MMult(A, b)
 End Function
 
 ' @description performs element-wise addition of two same-sized matrices
 ' @param A an m-by-n matrix
 ' @param B an m-by-n matrix
 ' @return the matrix C whose elements c_ij equal a_ij + b_ij
-Public Function plus(A As Variant, B As Variant) As Variant
-    Debug.Assert sameSize(A, B)
+Public Function plus(A As Variant, b As Variant) As Variant
+    Debug.Assert sameSize(A, b)
     
     Dim mat As Variant, i As Long, j As Long
     ReDim mat(UBound(A, 1), UBound(A, 2))
     
     For i = 1 To UBound(A, 1)
         For j = 1 To UBound(A, 2)
-            mat(i, j) = A(i, j) + B(i, j)
+            mat(i, j) = A(i, j) + b(i, j)
         Next j
     Next i
     
@@ -177,8 +177,8 @@ End Function
 ' @param A an m-by-n matrix
 ' @param B a p-by-q matrix
 ' @return returns TRUE iff m=p and n=q. Otherwise, returns FALSE.
-Public Function sameSize(A As Variant, B As Variant) As Boolean
-    sameSize = (UBound(A, 1) = UBound(B, 1)) And (UBound(A, 2) = UBound(B, 2))
+Public Function sameSize(A As Variant, b As Variant) As Boolean
+    sameSize = (UBound(A, 1) = UBound(b, 1)) And (UBound(A, 2) = UBound(b, 2))
 End Function
 
 
