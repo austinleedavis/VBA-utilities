@@ -135,14 +135,14 @@ Public Function lastIndexOf(ByRef o As Variant) As Long
     lastIndexOf = -1
 End Function
 
-Public Function toArray() As Variant()
+Public Function ToArray() As Variant()
     Dim arrCopy() As Variant
-    ReDim arrCopy(0 To size-1)
+    ReDim arrCopy(0 To size - 1)
     Dim i As Long
     For i = 0 To size - 1 Step 1
         arrCopy(i) = getIndexInternal(i)
     Next i
-    toArray = arrCopy
+    ToArray = arrCopy
 End Function
 
 
@@ -265,11 +265,11 @@ End Sub
 
 Public Function addAll(ByRef c As iCollection) As Boolean
     Variants.requireNonNull c
-	
-	Dim a() as Variant
-	a = c.toArray
+        
+        Dim A() As Variant
+        A = c.ToArray
     
-    For Each element In a
+    For Each element In A
         elementData.add element
     Next element
     addAll = c.size > 0
@@ -297,10 +297,10 @@ Public Function addAllAtIndex(index As Long, ByRef c As iCollection) As Boolean
     If index < elementData.Count Then
         Dim offset As Long
         offset = 0
-        Dim a() As Variant
-        a = c.toArray
-		
-        For Each element In a
+        Dim A() As Variant
+        A = c.ToArray
+                
+        For Each element In A
             elementData.add element, , , index + 1 + offset
             offset = offset + 1
         Next element
@@ -490,18 +490,16 @@ End Function
 'spliterator
 'stream
 Public Function iCollection_toArray() As Variant()
-    iCollection_toArray = toArray
+    iCollection_toArray = ToArray
 End Function
 
 Public Property Get iCollection_NewEnum() As IUnknown
     ''specified in iIterable
-	Attribute iCollection_NewEnum.VB_UserMemId = -4
     Set iCollection_NewEnum = NewEnum
 End Property
 
 Public Property Get iIterable_NewEnum() As IUnknown
     ''specified in iIterable
-	Attribute iIterable_NewEnum.VB_UserMemId = -4
     Set iIterable_NewEnum = NewEnum
 End Property
 

@@ -118,7 +118,7 @@ Private Function normalize(s As String, special_characters As String) As String
     Dim i As Long
     
     For i = 1 To Len(special_characters)
-        s = Replace(s, Mid(special_characters, i, 1), "")
+        s = replace(s, Mid(special_characters, i, 1), "")
     Next i
     
     normalize = s
@@ -131,17 +131,17 @@ End Function
 'the closest match. The third column shows the proportional similarity between the Levenshtein distance and the length of
 'the longer of the two strings, i.e. the input and the closest match; it is useful for giving a relative similarity among
 'a large list of strings
-Public Function FuzzyMatch(lookup_value As String, table_array As Range) As Variant
+Public Function FuzzyMatch(lookup_value As String, table_array As range) As Variant
     
-    Dim c As Range, result(1 To 3) As Variant, cell_value As String, min_dist As Long, best_match As String, _
+    Dim c As range, result(1 To 3) As Variant, cell_value As String, min_dist As Long, best_match As String, _
     lev_dist As Long
     
     'normalize the lookup_value by removing extra spaces
     lookup_value = Trim(lookup_value)
     
     For Each c In table_array
-        If (Trim(c.Value) = lookup_value) Then
-            result(1) = c.Value
+        If (Trim(c.value) = lookup_value) Then
+            result(1) = c.value
             result(2) = 0 ' zero levenshtein distance
             result(3) = 1 ' perfect match is 100% accurate
             FuzzyMatch = result
@@ -154,11 +154,11 @@ Public Function FuzzyMatch(lookup_value As String, table_array As Range) As Vari
     best_match = xlErrNA
     
     For Each c In table_array
-        cell_value = Trim(c.Value)
+        cell_value = Trim(c.value)
         lev_dist = Levenshtein(lookup_value, cell_value)
         If lev_dist < min_dist Then
             min_dist = lev_dist
-            best_match = c.Value 'use unnormalized cell value
+            best_match = c.value 'use unnormalized cell value
         End If
     Next c
 
@@ -179,11 +179,11 @@ End Function
 Sub FuzzyMatch_Batch()
     
     Dim _
-    input_arr As Range, _
-    search_arr As Range, _
-    ouptut_arr As Range, _
-    search_val As Range, _
-    input_val As Range, _
+    input_arr As range, _
+    search_arr As range, _
+    ouptut_arr As range, _
+    search_val As range, _
+    input_val As range, _
     min_dist As Long, _
     best_match As String, _
     lev_dist As Long, _
@@ -216,23 +216,23 @@ Sub FuzzyMatch_Batch()
     
         If i Mod 10 = 0 Then
             Application.StatusBar = "Fuzzy matching item: " & i & " of " & n
-            output_arr.Resize(n, 3).Value = Application.Transpose(outputValues)
+            output_arr.Resize(n, 3).value = Application.transpose(outputValues)
         End If
         
         min_dist = 2147483647
         best_match = xlErrNA
         
         For Each search_val In search_arr
-            If input_val.Value = search_val.Value Then
+            If input_val.value = search_val.value Then
                 min_dist = 0
-                best_match = search_val.Value
+                best_match = search_val.value
                 GoTo ExitFor
             End If
             
-            lev_dist = Levenshtein(Trim(input_val.Value), Trim(search_val.Value))
+            lev_dist = Levenshtein(Trim(input_val.value), Trim(search_val.value))
             If lev_dist < min_dist Then
                 min_dist = lev_dist
-                best_match = Trim(search_val.Value)
+                best_match = Trim(search_val.value)
             End If
             
         Next search_val
@@ -247,7 +247,7 @@ ExitFor:
     Next input_val
     
     'Copy output to worksheet
-    output_arr.Resize(n, 3).Value = Application.Transpose(outputValues)
+    output_arr.Resize(n, 3).value = Application.transpose(outputValues)
     
     Application.StatusBar = ""
     

@@ -6,7 +6,7 @@ Attribute VB_Name = "HashCodeBuilder"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
 Option Explicit
 
 Private constant_ As Long
@@ -73,72 +73,72 @@ End Function
 '' ****** ARRAYS OF PRIMITIVE TYPES ******
 '' ***************************************
 
-Public Function appendLongArray(arr() As Long) As HashCodeBuilder
-    If UBound(arr, 1) - LBound(arr, 1) + 1 = 0 Then
+Public Function appendLongArray(Arr() As Long) As HashCodeBuilder
+    If UBound(Arr, 1) - LBound(Arr, 1) + 1 = 0 Then
         total_ = total_ * constant_
     Else
         Dim val As Long
-        For Each val In arr
+        For Each val In Arr
             appendLong val
         Next val
         
     Set appendLongArray = Me
 End Function
 
-Public Function appendIntegerArray(arr() As Integer) As HashCodeBuilder
-    If UBound(arr, 1) - LBound(arr, 1) + 1 = 0 Then
+Public Function appendIntegerArray(Arr() As Integer) As HashCodeBuilder
+    If UBound(Arr, 1) - LBound(Arr, 1) + 1 = 0 Then
         total_ = total_ * constant_
     Else
         Dim val As Integer
-        For Each val In arr
+        For Each val In Arr
             appendInteger val
         Next val
         
     Set appendIntegerArray = Me
 End Function
 
-Public Function appendByteArray(arr() As Byte) As HashCodeBuilder
-    If UBound(arr, 1) - LBound(arr, 1) + 1 = 0 Then
+Public Function appendByteArray(Arr() As Byte) As HashCodeBuilder
+    If UBound(Arr, 1) - LBound(Arr, 1) + 1 = 0 Then
         total_ = total_ * constant_
     Else
         Dim val As Byte
-        For Each val In arr
+        For Each val In Arr
             appendByte val
         Next val
         
     Set appendByteArray = Me
 End Function
 
-Public Function appendSingleArray(arr() As Single) As HashCodeBuilder
-     If UBound(arr, 1) - LBound(arr, 1) + 1 = 0 Then
+Public Function appendSingleArray(Arr() As Single) As HashCodeBuilder
+     If UBound(Arr, 1) - LBound(Arr, 1) + 1 = 0 Then
         total_ = total_ * constant_
     Else
         Dim val As Single
-        For Each val In arr
+        For Each val In Arr
             appendShort val
         Next val
         
     Set appendSingleArray = Me
 End Function
 
-Public Function appendDoubleArray(arr() As Double) As HashCodeBuilder
-     If UBound(arr, 1) - LBound(arr, 1) + 1 = 0 Then
+Public Function appendDoubleArray(Arr() As Double) As HashCodeBuilder
+     If UBound(Arr, 1) - LBound(Arr, 1) + 1 = 0 Then
         total_ = total_ * constant_
     Else
         Dim val As Double
-        For Each val In arr
+        For Each val In Arr
             appendDouble val
         Next val
         
     Set appendDoubleArray = Me
 End Function
 
-Public Function appendBooleanArray(arr() As Boolean) As HashCodeBuilder
-     If UBound(arr, 1) - LBound(arr, 1) + 1 = 0 Then
+Public Function appendBooleanArray(Arr() As Boolean) As HashCodeBuilder
+     If UBound(Arr, 1) - LBound(Arr, 1) + 1 = 0 Then
         total_ = total_ * constant_
     Else
         Dim val As Boolean
-        For Each val In arr
+        For Each val In Arr
             appendBoolean val
         Next val
         
@@ -148,5 +148,3 @@ End Function
 Public Function hashCode() As Long
     hashCode = total_
 End Function
-
-

@@ -59,12 +59,12 @@ End Function
 
 'spliterator
 'stream
-Public Function toArray() As Variant()
+Public Function ToArray() As Variant()
 'interface method
 End Function
 
 Public Property Get NewEnum() As IUnknown
-	Attribute NewEnum.VB_UserMemId = -4
+Attribute NewEnum.VB_UserMemId = -4
     ''specified in iIterable
 End Property
 

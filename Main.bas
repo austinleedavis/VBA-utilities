@@ -29,7 +29,7 @@ Sub Main()
     Arr.addAllAtIndex 0, col
     Arr.addAllAtIndex 1, col
     Arr.addAllAtIndex 2, col
-    Debug.Print ("[ blah, blah, blah, blah2, a, b, blah2, a, b, blah2, a, b, blah, blah2]" = Arrays.toString(Arr.toArray)) & " ## addAllAtIndex "
+    Debug.Print ("[ blah, blah, blah, blah2, a, b, blah2, a, b, blah2, a, b, blah, blah2]" = Arrays.toString(Arr.ToArray)) & " ## addAllAtIndex "
 
     Arr.clear
     Arr.add "something"

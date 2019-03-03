@@ -238,7 +238,7 @@ End Function
 ' @param numberOfColumns = the number of columns (denoted n) in the resulting matrix
 ' @param mean = (Optional) the mean of the normal distribution used to fill the resulting matrix. If not specified, 0 is used.
 ' @param standard_dev = (Optional) the standard deviation of the normal distribution used to fill the resulting matrix. If not specified, 1.0 is used.
-Public Function randomNormal(numberOfRows As Long, numberOfColumns As Long, Optional mean As Double = 0#, Optional standard_dev As Double = 1#) As Variant
+Public Function randomNormal(numberOfRows As Long, numberOfColumns As Long, Optional mean As Double = 0#, Optional standard_Dev As Double = 1#) As Variant
     Debug.Assert numberOfRows > 0 And numberOfColumns > 0
     
     Dim mat() As Double, i As Long, j As Long
@@ -246,7 +246,7 @@ Public Function randomNormal(numberOfRows As Long, numberOfColumns As Long, Opti
     
     For i = 1 To numberOfRows
         For j = 1 To numberOfColumns
-            mat(i, j) = WorksheetFunction.NormInv(Rnd(), mean, standard_dev)
+            mat(i, j) = WorksheetFunction.NormInv(Rnd(), mean, standard_Dev)
         Next j
     Next i
     

@@ -62,7 +62,7 @@ End Function
 
 'spliterator
 'stream
-Public Function toArray() As Variant()
+Public Function ToArray() As Variant()
 'inherited method from iCollection
 End Function
 

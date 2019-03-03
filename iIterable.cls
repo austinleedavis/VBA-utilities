@@ -11,6 +11,6 @@ Option Explicit
 
 'Interface for custom data structures that implies all instances can be iterated over using the For-Each construct
 Public Property Get NewEnum() As IUnknown
-	Attribute NewEnum.VB_UserMemId = -4
+Attribute NewEnum.VB_UserMemId = -4
     ''specified in iIterable
 End Property

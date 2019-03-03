@@ -46,7 +46,7 @@ Public Function Softplus(x)
 End Function
 
 
-Public Function CosineSimilarity(ByRef Arr1 As Range, ByRef Arr2 As Range)
+Public Function CosineSimilarity(ByRef Arr1 As range, ByRef Arr2 As range)
     'Computes the Cosine Similarity Metric between two Ranges. Cosine similarity is a measure of similarity between two non-zero vectors of an inner product space that measures the cosine of the angle between them.
     
     AB = Dot(Arr1, Arr2)
@@ -62,7 +62,7 @@ Public Function Hamming(s As String, t As String)
     Dim i As Long, cost As Long
     
     If Len(s) <> Len(t) Then
-        Err.Raise xlErrValue
+        err.Raise xlErrValue
     End If
     
     cost = 0
@@ -111,7 +111,7 @@ Public Function Levenshtein(s As String, t As String)
                 substitutionCost = 1
             End If
             
-            v1(j + 1) = WorksheetFunction.Min(v1(j) + 1, v0(j + 1) + 1, v0(j) + substitutionCost)
+            v1(j + 1) = WorksheetFunction.min(v1(j) + 1, v0(j + 1) + 1, v0(j) + substitutionCost)
             
         Next j
         
@@ -126,7 +126,7 @@ Public Function Levenshtein(s As String, t As String)
 End Function
 
 
-Public Function Dot(ByRef A As Range, ByRef B As Range)
+Public Function Dot(ByRef A As range, ByRef B As range)
     'Computes the dot product between two ranges. Assumes ranges are equally sized
     Dot = Application.Evaluate("SUMPRODUCT(" & A.Address & "," & B.Address & ")")
 End Function

@@ -13,27 +13,27 @@ Sub createTadpoleChart()
 
 
     Dim ChartObj As ChartObject
-    Set ChartObj = ActiveSheet.ChartObjects.Add(Left:=20, Width:=800, Top:=20, Height:=500)
+    Set ChartObj = ActiveSheet.ChartObjects.add(Left:=20, Width:=800, Top:=20, Height:=500)
     ChartObj.Chart.ChartType = xlXYScatterSmoothNoMarkers
 
     Dim teamId As Integer
     
     Dim teamCount, tailLength As Integer
-    Dim xRng, yRng As Range
+    Dim xRng, yRng As range
     Dim ChartSeries As Series
     
-    teamCount = Range(xDataRange).Columns.Count
-    tailLength = Range(xDataRange).Rows.Count
+    teamCount = range(xDataRange).Columns.Count
+    tailLength = range(xDataRange).Rows.Count
     
     tailLength = 4
     
     For teamId = 1 To teamCount
 
-        With Range(xDataRange).Cells(0, 0)
-            Set xRng = Range(.Offset(1, teamId), .Offset(tailLength, teamId))
+        With range(xDataRange).Cells(0, 0)
+            Set xRng = range(.offset(1, teamId), .offset(tailLength, teamId))
         End With
-        With Range(yDataRange).Cells(0, 0)
-            Set yRng = Range(.Offset(1, teamId), .Offset(tailLength, teamId))
+        With range(yDataRange).Cells(0, 0)
+            Set yRng = range(.offset(1, teamId), .offset(tailLength, teamId))
         End With
         
         Debug.Print "----" & teamId & "----"
@@ -45,7 +45,7 @@ Sub createTadpoleChart()
         Set ChartSeries = ChartObj.Chart.SeriesCollection.NewSeries
         With ChartSeries
             .XValues = xRng.Cells
-            .Values = yRng.Cells
+            .values = yRng.Cells
             .Name = "Team " & teamId
             .Format.Line.DashStyle = msoLineSolid
             .Format.Line.Transparency = 0.25

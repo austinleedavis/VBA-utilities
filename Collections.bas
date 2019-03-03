@@ -15,18 +15,18 @@ err:
 End Function
 
 'Returns True if the Collection contains an element equal to value
-Public Function contains(value As Variant, col As collection) As Boolean
+Public Function contains(value As Variant, col As Collection) As Boolean
     contains = (indexOf(value, col) >= 0)
 End Function
 
 
 'Returns the first index of an element equal to value. If the Collection
 'does not contain such an element, returns -1.
-Public Function indexOf(value As Variant, col As collection) As Long
+Public Function indexOf(value As Variant, col As Collection) As Long
 
     Dim index As Long
     
-    For index = 1 To col.count Step 1
+    For index = 1 To col.Count Step 1
         If col(index) = value Then
             indexOf = index
             Exit Function
@@ -48,21 +48,21 @@ End Function
 
 'Returns an array which exactly matches this collection.
 ' Note: This function is not safe for concurrent modification.
-Public Function ToArray(col As collection) As Variant
-    Dim a() As Variant
-    ReDim a(0 To col.count)
+Public Function ToArray(col As Collection) As Variant
+    Dim A() As Variant
+    ReDim A(0 To col.Count)
     Dim i As Long
-    For i = 0 To col.count - 1
-        a(i) = col(i + 1)
+    For i = 0 To col.Count - 1
+        A(i) = col(i + 1)
     Next i
-    ToArray = a()
+    ToArray = A()
 End Function
 
 'Returns a Collection which exactly matches the given Array
 ' Note: This function is not safe for concurrent modification.
-Public Function FromArray(a() As Variant) As collection
-    Dim col As collection
-    Set col = New collection
+Public Function FromArray(A() As Variant) As Collection
+    Dim col As Collection
+    Set col = New Collection
     Dim element As Variant
     For Each element In A
         col.add element

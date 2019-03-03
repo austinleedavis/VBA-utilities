@@ -142,14 +142,14 @@ Public Function lastIndexOf(o As Variant) As Long
     End If
 End Function
 
-Public Function toArray() As Variant()
+Public Function ToArray() As Variant()
     Dim arrCopy() As Variant
     ReDim arrCopy(0 To size)
     Dim i As Long
     For i = 0 To size Step 1
         arrCopy(i) = elementData(i)
     Next i
-    toArray = arrCopy
+    ToArray = arrCopy
 End Function
 
 

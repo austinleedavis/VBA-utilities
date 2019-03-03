@@ -6,7 +6,8 @@ Attribute VB_Name = "Timer"
 Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
-Attribute VB_Exposed = True
+Attribute VB_Exposed = False
+
 ' A high-precision timer class used to test performance of VBA code.
 ' This class was copied from the StackOverflow answer at http://stackoverflow.com/a/198702/3795219
 
@@ -17,8 +18,8 @@ Private Type LARGE_INTEGER
     highpart As Long
 End Type
 
-Private Declare Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As LARGE_INTEGER) As Long
-Private Declare Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As LARGE_INTEGER) As Long
+Private Declare PtrSafe Function QueryPerformanceCounter Lib "kernel32" (lpPerformanceCount As LARGE_INTEGER) As Long
+Private Declare PtrSafe Function QueryPerformanceFrequency Lib "kernel32" (lpFrequency As LARGE_INTEGER) As Long
 
 Private m_CounterStart As LARGE_INTEGER
 Private m_CounterEnd As LARGE_INTEGER
