@@ -294,8 +294,14 @@ Private Sub squash(ByRef X() As Double, N As Long, D As Long)
     Next i
 End Sub
 
+' returns NormInv with mean =0, stdev = 1
 Private Function randn() As Double
-    randn = WorksheetFunction.NormInv(Rnd(), 0, 1)
+    'randn = WorksheetFunction.NormInv(Rnd(), 0, 1)
+    Dim u1 As Double, u2 As Double
+    u1 = Rnd()
+    u2 = Rnd()
+    
+    randn = (Sqr(-2 * Log(u1))) * Cos(2 * PI * u2)
 End Function
 
 
