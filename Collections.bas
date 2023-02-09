@@ -172,10 +172,10 @@ Public Sub Copy(ByRef src As Collection, srcPos As Long, ByRef dst As Collection
     
     'Check if all offsets and lengths are non negative
     If srcPos < 1 Then
-        err.Raise 9, , "srcPos too small: " & destPos
+        err.Raise 9, , "srcPos too small: " & srcPos
     End If
-    If destPos < 1 Then
-        err.Raise 9, , "destPos too small: " & destPos
+    If dstPos < 1 Then
+        err.Raise 9, , "dstPos too small: " & dstPos
     End If
     If length < 0 Then
         err.Raise 9, , "negative length provided"
