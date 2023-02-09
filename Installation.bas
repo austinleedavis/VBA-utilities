@@ -64,7 +64,7 @@ Sub ForceImportAllModules()
         isCls = Right(strLine, 4) = ".cls"
         If isBas Or isCls Then
             For Each VBComponent In ThisWorkbook.VBProject.VBComponents
-                If VBComponent.Name = Left(strLine, Len(strLine) - 4) Then
+                If VBComponent.Name = left(strLine, Len(strLine) - 4) Then
                     VBComponent.Name = VBComponent.Name & "_REMOVED"
                     ThisWorkbook.VBProject.VBComponents.remove VBComponent
                     Exit For
@@ -77,7 +77,7 @@ Sub ForceImportAllModules()
                 Set objFSO = GetFileObject(strPath & strLine)
                 ThisWorkbook.VBProject.VBComponents.add vbext_ct_ClassModule
                 ThisWorkbook.VBProject.VBComponents("Class1").CodeModule.AddFromFile strPath & strLine
-                ThisWorkbook.VBProject.VBComponents(Left(strLine, Len(strLine) - 4)).CodeModule.DeleteLines 1, 4
+                ThisWorkbook.VBProject.VBComponents(left(strLine, Len(strLine) - 4)).CodeModule.DeleteLines 1, 4
             End If
 
         End If

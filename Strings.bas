@@ -58,7 +58,7 @@ End Function
 Public Function JaccardDistance(ByVal A As String, ByVal B As String, Optional k As Long = 5) As Double
     Dim aUb As Scripting.Dictionary, aSet As Scripting.Dictionary, bSet As Scripting.Dictionary
     Dim m As Long 'length of A
-    Dim n As Long 'length of B
+    Dim N As Long 'length of B
     Dim ngram As Variant
     Dim aNb_Size As Long
     Dim i As Long
@@ -133,34 +133,34 @@ End Function
 'a large list of strings
 Public Function FuzzyMatch(lookup_value As String, table_array As range) As Variant
     
-    Dim c As range, result(1 To 3) As Variant, cell_value As String, min_dist As Long, best_match As String, _
+    Dim C As range, result(1 To 3) As Variant, cell_value As String, min_dist As Long, best_match As String, _
     lev_dist As Long
     
     'normalize the lookup_value by removing extra spaces
     lookup_value = Trim(lookup_value)
     
-    For Each c In table_array
-        If (Trim(c.value) = lookup_value) Then
-            result(1) = c.value
+    For Each C In table_array
+        If (Trim(C.value) = lookup_value) Then
+            result(1) = C.value
             result(2) = 0 ' zero levenshtein distance
             result(3) = 1 ' perfect match is 100% accurate
             FuzzyMatch = result
             Exit Function
         End If
-    Next c
+    Next C
     
     'No exact match found, must compute values pairwise to determine
     min_dist = 2147483647
     best_match = xlErrNA
     
-    For Each c In table_array
-        cell_value = Trim(c.value)
+    For Each C In table_array
+        cell_value = Trim(C.value)
         lev_dist = Levenshtein(lookup_value, cell_value)
         If lev_dist < min_dist Then
             min_dist = lev_dist
-            best_match = c.value 'use unnormalized cell value
+            best_match = C.value 'use unnormalized cell value
         End If
-    Next c
+    Next C
 
     result(1) = best_match
     result(2) = min_dist
@@ -188,7 +188,7 @@ Sub FuzzyMatch_Batch()
     best_match As String, _
     lev_dist As Long, _
     i As Long, _
-    n As Long, _
+    N As Long, _
     m As Long, _
     outputValues() As String
     
@@ -198,25 +198,25 @@ Sub FuzzyMatch_Batch()
     Set search_arr = Application.InputBox("Select lookup table array", "Obtain Range Object", Type:=8)
     Set output_arr = Application.InputBox("Select Top Left corner of output range", "Obtain Range Object", Type:=8)
     
-    n = input_arr.Count
+    N = input_arr.Count
     m = search_arr.Count
     
     
     If m > 500 Then
-        If MsgBox("The search array you provided contains " & m & " elements. Processing " & n & " input values against this search space may take a while. Do you wish to continue?", vbYesNo, "Large Selection Detected") = vbNo Then
+        If MsgBox("The search array you provided contains " & m & " elements. Processing " & N & " input values against this search space may take a while. Do you wish to continue?", vbYesNo, "Large Selection Detected") = vbNo Then
             Exit Sub
         End If
     End If
     
-    ReDim outputValues(1 To 3, 1 To n)
+    ReDim outputValues(1 To 3, 1 To N)
     
     i = 1
     
     For Each input_val In input_arr
     
         If i Mod 10 = 0 Then
-            Application.StatusBar = "Fuzzy matching item: " & i & " of " & n
-            output_arr.Resize(n, 3).value = Application.transpose(outputValues)
+            Application.StatusBar = "Fuzzy matching item: " & i & " of " & N
+            output_arr.Resize(N, 3).value = Application.transpose(outputValues)
         End If
         
         min_dist = 2147483647
@@ -247,7 +247,7 @@ ExitFor:
     Next input_val
     
     'Copy output to worksheet
-    output_arr.Resize(n, 3).value = Application.transpose(outputValues)
+    output_arr.Resize(N, 3).value = Application.transpose(outputValues)
     
     Application.StatusBar = ""
     

@@ -54,16 +54,16 @@ End Function
 Public Function insertionSort(A As Variant) As Variant
     Debug.Assert NumberOfArrayDimensions(A) = 1
     
-    Dim i As Long, j As Long, lb As Long, ub As Long, length As Long, x As Variant
+    Dim i As Long, j As Long, lb As Long, ub As Long, length As Long, X As Variant
     lb = LBound(A)
     ub = UBound(A)
     length = ub - lb + 1
     
     i = lb + 1
     Do While i < ub
-        x = A(i)
+        X = A(i)
         j = i - 1
-        While j >= lb And A(j) > x
+        While j >= lb And A(j) > X
             A(j + 1) = A(j)
             j = j - 1
             If j < lb Then
@@ -71,7 +71,7 @@ Public Function insertionSort(A As Variant) As Variant
             End If
         Wend
 end_of_while:
-        A(j + 1) = x
+        A(j + 1) = X
         i = i + 1
     Loop
     insertionSort = A
@@ -1811,7 +1811,7 @@ Public Function IsArrayAllocated(Arr As Variant) As Boolean
     ' This function is just the reverse of IsArrayEmpty.
     '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Dim n As Long
+    Dim N As Long
     On Error Resume Next
     
     ' if Arr is not an array, return FALSE and get out.
@@ -1822,7 +1822,7 @@ Public Function IsArrayAllocated(Arr As Variant) As Boolean
     
     ' Attempt to get the UBound of the array. If the array has not been allocated,
     ' an error will occur. Test Err.Number to see if an error occurred.
-    n = UBound(Arr, 1)
+    N = UBound(Arr, 1)
     If (err.Number = 0) Then
         ''''''''''''''''''''''''''''''''''''''
         ' Under some circumstances, if an array
@@ -2694,7 +2694,7 @@ Public Function SetObjectArrayToNothing(InputArray As Variant) As Boolean
 ' The function returns True if successful, False otherwise.
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     
-    Dim n As Long
+    Dim N As Long
     
     ''''''''''''''''''''''''''''''''''''''
     ' Ensure InputArray is an array.
@@ -2724,12 +2724,12 @@ Public Function SetObjectArrayToNothing(InputArray As Variant) As Boolean
     ' get set to Nothing.
     ''''''''''''''''''''''''''''''''''''''''''''''''
     If IsArrayAllocated(Arr:=InputArray) = True Then
-        For n = LBound(InputArray) To UBound(InputArray)
-            If IsObject(InputArray(n)) = False Then
+        For N = LBound(InputArray) To UBound(InputArray)
+            If IsObject(InputArray(N)) = False Then
                 SetObjectArrayToNothing = False
                 Exit Function
             End If
-        Next n
+        Next N
     Else
         SetObjectArrayToNothing = True
         Exit Function
@@ -2739,9 +2739,9 @@ Public Function SetObjectArrayToNothing(InputArray As Variant) As Boolean
     '''''''''''''''''''''''''''''''''''''''''''''
     ' Set each element of InputArray to Nothing.
     '''''''''''''''''''''''''''''''''''''''''''''
-    For n = LBound(InputArray) To UBound(InputArray)
-        Set InputArray(n) = Nothing
-    Next n
+    For N = LBound(InputArray) To UBound(InputArray)
+        Set InputArray(N) = Nothing
+    Next N
     
     SetObjectArrayToNothing = True
     

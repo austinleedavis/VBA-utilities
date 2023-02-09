@@ -9,7 +9,7 @@ Option Explicit
 ' multiple function calls
 
 ' the array of characters from which the NextString method will select characters unless an alternative string of characters is supplied
-Private Const CHAR_ARR As String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz" 
+Private Const CHAR_ARR As String = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 ' The length of the CHAR_ARR constant
 Private Const LEN_CHAR_ARR As Integer = 62
@@ -26,7 +26,7 @@ Private LastBoolValue As Boolean
 ' The most recent Long value returned by the NextLong method; can be accessed via the LastLong method
 Private LastLongValue As Long
 
-' @description Equivalent to the VBA Randomize method. Resets the seed of the pseudorandom number generator. 
+' @description Equivalent to the VBA Randomize method. Resets the seed of the pseudorandom number generator.
 ' @param seed Optional. a numeric seed that will be used by the RND function to generate a pseudorandom number. If no seed value is provided, the system timer as the seed value for the RND function.
 Public Sub setSeed(Optional seed As Long)
     If (seed Is Nothing) Then
@@ -47,11 +47,11 @@ Public Function NextString(Optional length As Long = 8, Optional characters As S
     s = Space(length)
     Dim charLen As Long
     charLen = Len(characters) - 1
-    Dim n As Long
+    Dim N As Long
     Dim nl As Long
-    For n = 1 To length 'don't hardcode the length twice
+    For N = 1 To length 'don't hardcode the length twice
         nl = NextLong(1, charLen)
-        Mid(s, n, 1) = Mid(characters, nl, 1) 'bit more efficient than concatenation
+        Mid(s, N, 1) = Mid(characters, nl, 1) 'bit more efficient than concatenation
     Next
 
     LastStringValue = s
@@ -68,7 +68,7 @@ End Function
 '@description Returns a pseudorandom Long value within the specified bounds. Formally, given a lower bound L and upper bound U, returns a random value x, such that L<=x<=U. A new random number is returned after each call to this method. The most recently returned value can be retrieved after-the-fact usign the {@ref LastLong} method
 '@param LowerBound Optional. The smallest Long value returned by the function. If no value is specified, 0 is used as the lower bound.
 '@param UpperBound Optional. The largest Long value returned by the function. If no value is specified, the maximum Long value (i.e. 2,147,483,647) is used as the upper bound.
-'@return Returns 
+'@return Returns
 Public Function NextLong(Optional LowerBound As Long = 0, Optional UpperBound As Long = 2147483647) As Long
     NextLong = (UpperBound - LowerBound + 1) * Rnd + LowerBound
     LastLongValue = NextLong
@@ -93,14 +93,14 @@ Public Function LastBoolean(Optional trueFrequency As Double = 0.5) As Boolean
     LastBoolean = LastBoolValue
 End Function
 
-'@description returns the probability that the observed value of a normal random variable with given mean and standard deviation will be less than or equal to x. 
+'@description returns the probability that the observed value of a normal random variable with given mean and standard deviation will be less than or equal to x.
 '@param x The observed value
 '@param mean Optional. The mean of the normal random variable. If no value is given, a mean of 0 is used.
 '@param standard_dev the standard deviation of the normal random variable. If no value is given, a standard deviation of 1 is used.
 '@return Returns the probability that the observed value x would be drawn from a normal random variable with the given mean and standard deviation
-Public Function NormDistVBA(x As Double, Optional mean As Double = 0, Optional standard_dev As Double = 1) As Double
+Public Function NormDistVBA(X As Double, Optional mean As Double = 0, Optional standard_dev As Double = 1) As Double
     Dim expNum As Double, expDenom As Double, denom As Double
-    expNum = -((x - mean) * (x - mean))
+    expNum = -((X - mean) * (X - mean))
     expDenom = 2 * standard_dev * standard_dev
     denom = standard_dev * Sqr(2 * PI)
     NormDistVBA = (1 / denom) * Exp(expNum / expDenom)

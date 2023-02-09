@@ -13,7 +13,7 @@ Public Function add(ByRef e As Variant) As Boolean
     'interface method
 End Function
 
-Public Function addAll(ByRef c As iCollection) As Boolean
+Public Function addAll(ByRef C As iCollection) As Boolean
 'interface method
 End Function
 
@@ -45,11 +45,11 @@ Public Function remove(ByRef o As Variant) As Boolean
 'interface method
 End Function
 
-Public Function removeAll(ByRef c As iCollection) As Boolean
+Public Function removeAll(ByRef C As iCollection) As Boolean
 'interface method
 End Function
 
-Public Function retainAll(ByRef c As iCollection) As Boolean
+Public Function retainAll(ByRef C As iCollection) As Boolean
 'interface method
 End Function
 

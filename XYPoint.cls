@@ -8,18 +8,18 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = True
 'simple coordinate object to represent points and vectors
-Public x As Double
-Public y As Double
+Public X As Double
+Public Y As Double
 
-Public Function getTranslation(xShift As Double, yShift As Double) As XYpoint
-    Dim p As XYpoint
-    Set p = New XYpoint
-    p.x = x + xShift
-    p.y = y + yShift
-    Set getTranslation = p
+Public Function getTranslation(xShift As Double, yShift As Double) As XYPoint
+    Dim P As XYPoint
+    Set P = New XYPoint
+    P.X = X + xShift
+    P.Y = Y + yShift
+    Set getTranslation = P
 End Function
 
 
 Public Function toString() As String
-    toString = "[Class: XYPoint; x: " & x & ", y: " & y & " ]"
+    toString = "[Class: XYPoint; x: " & X & ", y: " & Y & " ]"
 End Function

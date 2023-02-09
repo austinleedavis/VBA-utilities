@@ -41,8 +41,8 @@ End Sub
 Public Sub setBoundary(centerX As Double, centerY As Double, halfDimension As Double)
     Debug.Assert halfDimension > 0
     Set boundary = New AABB
-    boundary.center.x = centerX
-    boundary.center.y = centerY
+    boundary.center.X = centerX
+    boundary.center.Y = centerY
     boundary.halfDimension = halfDimension
 End Sub
 
@@ -54,7 +54,7 @@ End Function
 
 
 Public Sub demo()
-    Dim qt As QuadTree, i As Long, halfSize As Double, queryResults As Collection, p As XYpoint
+    Dim qt As QuadTree, i As Long, halfSize As Double, queryResults As Collection, P As XYPoint
     Set qt = New QuadTree
     halfSize = 400
     qt.setBoundary 400, 400, halfSize
@@ -65,16 +65,16 @@ Public Sub demo()
     
     qt.drawTree
     
-    Set p = New XYpoint
-    p.x = Rnd() * halfSize
-    p.y = Rnd() * halfSize
+    Set P = New XYPoint
+    P.X = Rnd() * halfSize
+    P.Y = Rnd() * halfSize
     
-    Debug.Print "Query Target Center: " & p.getTranslation(-halfSize, -halfSize).toString & vbCrLf & "Query Target Size: " & 2 * (halfSize - 1)
-    Set queryResults = qt.queryRangeBoundary(p.x, p.y, halfSize - 1)
+    Debug.Print "Query Target Center: " & P.getTranslation(-halfSize, -halfSize).toString & vbCrLf & "Query Target Size: " & 2 * (halfSize - 1)
+    Set queryResults = qt.queryRangeBoundary(P.X, P.Y, halfSize - 1)
     
-    For Each p In queryResults
-        Debug.Print "  " & p.toString()
-    Next p
+    For Each P In queryResults
+        Debug.Print "  " & P.toString()
+    Next P
     
 End Sub
 
@@ -82,22 +82,22 @@ End Sub
 ' @param x the x-coodinate of the new point
 ' @param y the y-coordinate of the new point
 ' @return returns true if the point was successfully inserted; returns false, otherwise.
-Public Function insertCoordinate(x As Double, y As Double) As Boolean
-    Dim p As XYpoint
-    Set p = New XYpoint
-    p.x = x
-    p.y = y
-    insertCoordinate = insertPoint(p)
+Public Function insertCoordinate(X As Double, Y As Double) As Boolean
+    Dim P As XYPoint
+    Set P = New XYPoint
+    P.X = X
+    P.Y = Y
+    insertCoordinate = insertPoint(P)
 End Function
 
 ' @description inserts a point into the QuadTree
 ' @param x the x-coodinate of the new point
 ' @param y the y-coordinate of the new point
 ' @return returns true if the point was successfully inserted; returns false, otherwise.
-Public Function insertPoint(p As XYpoint) As Boolean
+Public Function insertPoint(P As XYPoint) As Boolean
 
     'ignore objects that do not belong to this quad tree node
-    If (Not boundary.contains(p)) Then
+    If (Not boundary.contains(P)) Then
         insertPoint = False
         Exit Function
     End If
@@ -105,8 +105,8 @@ Public Function insertPoint(p As XYpoint) As Boolean
     'if this node has not been subdivided
     If northWest Is Nothing Then
         'check if there is still room at this level of the tree
-        If points.count < QT_NODE_CAPACITY Then
-            points.add p
+        If points.Count < QT_NODE_CAPACITY Then
+            points.add P
             insertPoint = True
             Exit Function
         Else
@@ -115,16 +115,16 @@ Public Function insertPoint(p As XYpoint) As Boolean
         End If
     End If
     
-    If northWest.insertPoint(p) Then
+    If northWest.insertPoint(P) Then
         insertPoint = True
         Exit Function
-    ElseIf northEast.insertPoint(p) Then
+    ElseIf northEast.insertPoint(P) Then
         insertPoint = True
         Exit Function
-    ElseIf southWest.insertPoint(p) Then
+    ElseIf southWest.insertPoint(P) Then
         insertPoint = True
         Exit Function
-    ElseIf southEast.insertPoint(p) Then
+    ElseIf southEast.insertPoint(P) Then
         insertPoint = True
         Exit Function
     End If
@@ -138,16 +138,16 @@ End Function
 ' @param centerLocation the point at which the QuadTree is centered
 ' @param halfDimension the distance to the dividing edge of the QuadTree's area of coverage
 ' @return returns a quadtree with the specified center and height/width
-Public Function factory(centerLocation As XYpoint, halfDimension As Double) As QuadTree
+Public Function factory(centerLocation As XYPoint, halfDimension As Double) As QuadTree
     Dim qt As QuadTree, range As AABB
     Set qt = New QuadTree
-    qt.setBoundary centerLocation.x, centerLocation.y, halfDimension
+    qt.setBoundary centerLocation.X, centerLocation.Y, halfDimension
     Set factory = qt
 End Function
 
 'subdivides this quadtree into 4 child quadtrees and then distributes points according to their XY coordinates
 Private Sub subdivide()
-    Dim newSize As Double, p As XYpoint
+    Dim newSize As Double, P As XYPoint
     newSize = boundary.halfDimension / 2#
     
     'prepare child quadtrees
@@ -157,16 +157,16 @@ Private Sub subdivide()
     Set southEast = factory(boundary.center.getTranslation(newSize, newSize), newSize)
     
     'move points in this quadtree node to the appropriate child node
-    For Each p In points
+    For Each P In points
         'if the point p is successfully inserted into any one of the children, then the subsequent IfElse statements are not evaluated. And we continue moving the remaining points
-        If northWest.insertPoint(p) Then
-        ElseIf northEast.insertPoint(p) Then
-        ElseIf southWest.insertPoint(p) Then
-        ElseIf southEast.insertPoint(p) Then
+        If northWest.insertPoint(P) Then
+        ElseIf northEast.insertPoint(P) Then
+        ElseIf southWest.insertPoint(P) Then
+        ElseIf southEast.insertPoint(P) Then
         Else
             err.Raise 17, Description:="Illegal state: Unable to find appropriate child node for subdividion."
         End If
-    Next p
+    Next P
     
     'since all points now reside in the child quadtree nodes, clear the points Collection
     Set points = New Collection
@@ -176,14 +176,14 @@ End Sub
 Public Function queryRangeBoundary(centerX As Double, centerY As Double, boundaryHalfDimension As Double) As Collection
     Dim range As AABB
     Set range = New AABB
-    range.center.x = centerX
-    range.center.y = centerY
+    range.center.X = centerX
+    range.center.Y = centerY
     range.halfDimension = boundaryHalfDimension
     Set queryRangeBoundary = queryRange(range)
 End Function
 
 Public Function queryRange(range As AABB) As Collection
-    Dim pointsInRange As Collection, p As XYpoint
+    Dim pointsInRange As Collection, P As XYPoint
     Set pointsInRange = New Collection
     
     'automatically abort if range does not intersect this quad
@@ -193,11 +193,11 @@ Public Function queryRange(range As AABB) As Collection
     End If
     
     'check objects at this quad level
-    For Each p In points
-        If range.contains(p) Then
-            pointsInRange.add p
+    For Each P In points
+        If range.contains(P) Then
+            pointsInRange.add P
         End If
-    Next p
+    Next P
     
     'terminate here if there are no children
     If northWest Is Nothing Then
@@ -215,19 +215,19 @@ Public Function queryRange(range As AABB) As Collection
     
 End Function
 
-Public Function contains(p As XYpoint) As Boolean
-    contains = boundary.contains(p)
+Public Function contains(P As XYPoint) As Boolean
+    contains = boundary.contains(P)
 End Function
 
 
 Public Sub drawTree()
-    Dim wksht As Worksheet, p As XYpoint, r As Single, left As Single, top As Single, width As Single, height As Single, shp As Shape
-    Set wksht = ThisWorkbook.Sheets.add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.count))
+    Dim wksht As Worksheet, P As XYPoint, r As Single, left As Single, top As Single, width As Single, height As Single, shp As Shape
+    Set wksht = ThisWorkbook.Sheets.add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
     r = 2
     
     'draw boundary
-    left = boundary.center.x - boundary.halfDimension + 1
-    top = boundary.center.y - boundary.halfDimension + 1
+    left = boundary.center.X - boundary.halfDimension + 1
+    top = boundary.center.Y - boundary.halfDimension + 1
     width = 2 * boundary.halfDimension
     height = 2 * boundary.halfDimension
     Set shp = wksht.Shapes.AddShape(msoShapeRectangle, left, top, width, height)
@@ -237,7 +237,7 @@ Public Sub drawTree()
     shp.Fill.Visible = msoTrue
     shp.Fill.Transparency = 0.8
     shp.Fill.ForeColor.RGB = RGB(120, 120, 120)
-    shp.TextFrame.characters.Text = points.count
+    shp.TextFrame.characters.Text = points.Count
     shp.TextFrame.characters.Font.ColorIndex = 2
     shp.TextFrame.VerticalAlignment = xlVAlignCenter
     shp.TextFrame.HorizontalAlignment = xlHAlignCenter
@@ -249,19 +249,19 @@ Public Sub drawTree()
         southWest.drawTree
         southEast.drawTree
         
-        Set shp = wksht.Shapes.AddLine(boundary.center.x, boundary.center.y, northWest.getBoundary().center.x, northWest.getBoundary().center.y)
-        Set shp = wksht.Shapes.AddLine(boundary.center.x, boundary.center.y, northEast.getBoundary().center.x, northEast.getBoundary().center.y)
-        Set shp = wksht.Shapes.AddLine(boundary.center.x, boundary.center.y, southWest.getBoundary().center.x, southWest.getBoundary().center.y)
-        Set shp = wksht.Shapes.AddLine(boundary.center.x, boundary.center.y, southEast.getBoundary().center.x, southEast.getBoundary().center.y)
+        Set shp = wksht.Shapes.AddLine(boundary.center.X, boundary.center.Y, northWest.getBoundary().center.X, northWest.getBoundary().center.Y)
+        Set shp = wksht.Shapes.AddLine(boundary.center.X, boundary.center.Y, northEast.getBoundary().center.X, northEast.getBoundary().center.Y)
+        Set shp = wksht.Shapes.AddLine(boundary.center.X, boundary.center.Y, southWest.getBoundary().center.X, southWest.getBoundary().center.Y)
+        Set shp = wksht.Shapes.AddLine(boundary.center.X, boundary.center.Y, southEast.getBoundary().center.X, southEast.getBoundary().center.Y)
         
     End If
     
      'draw points last so they are on top
-    For Each p In points
-        Set shp = wksht.Shapes.AddShape(msoShapeOval, left:=p.x - r + 1, top:=p.y - r + 1, width:=2 * r, height:=2 * r)
+    For Each P In points
+        Set shp = wksht.Shapes.AddShape(msoShapeOval, left:=P.X - r + 1, top:=P.Y - r + 1, width:=2 * r, height:=2 * r)
         shp.Line.Visible = msoFalse
         shp.Fill.Transparency = 0.3
         shp.Fill.ForeColor.RGB = RGB(0, 0, 0)
-    Next p
+    Next P
     
 End Sub

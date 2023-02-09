@@ -263,16 +263,16 @@ Public Sub clear()
 '    size = 0
 End Sub
 
-Public Function addAll(ByRef c As iCollection) As Boolean
-    Variants.requireNonNull c
+Public Function addAll(ByRef C As iCollection) As Boolean
+    Variants.requireNonNull C
         
         Dim A() As Variant
-        A = c.ToArray
+        A = C.ToArray
     
     For Each element In A
         elementData.add element
     Next element
-    addAll = c.size > 0
+    addAll = C.size > 0
     
 '    Dim numNew As Long
 '    numNew = UBound(arr) - LBound(arr)
@@ -290,24 +290,24 @@ Public Function addAll(ByRef c As iCollection) As Boolean
 End Function
 
 
-Public Function addAllAtIndex(index As Long, ByRef c As iCollection) As Boolean
+Public Function addAllAtIndex(index As Long, ByRef C As iCollection) As Boolean
     rangeCheckForAdd index
-    Variants.requireNonNull c
+    Variants.requireNonNull C
         
     If index < elementData.Count Then
         Dim offset As Long
         offset = 0
         Dim A() As Variant
-        A = c.ToArray
+        A = C.ToArray
                 
         For Each element In A
             elementData.add element, , , index + 1 + offset
             offset = offset + 1
         Next element
     Else
-        addAll c
+        addAll C
     End If
-    addAllAtIndex = (c.size > 0)
+    addAllAtIndex = (C.size > 0)
     
     
 '    rangeCheckForAdd (index)
@@ -359,17 +359,17 @@ Sub removeRange(fromIndex As Long, toIndex As Long)
 '    size = newSize
 End Sub
 
-Public Function removeAll(ByRef c As iCollection) As Boolean
-    Variants.requireNonNull c
-    batchRemove c, False
+Public Function removeAll(ByRef C As iCollection) As Boolean
+    Variants.requireNonNull C
+    batchRemove C, False
 End Function
 
-Public Function retainAll(ByRef c As iCollection) As Boolean
-    Variants.requireNonNull c
-    batchRemove c, True
+Public Function retainAll(ByRef C As iCollection) As Boolean
+    Variants.requireNonNull C
+    batchRemove C, True
 End Function
 
-Private Function batchRemove(ByRef c As ArrayListCol, complement As Boolean) As Boolean
+Private Function batchRemove(ByRef C As ArrayListCol, complement As Boolean) As Boolean
     Dim r As Integer
     Dim w As Integer
     r = 0
@@ -379,7 +379,7 @@ Private Function batchRemove(ByRef c As ArrayListCol, complement As Boolean) As 
     
     On Error GoTo finally
     For r = 0 To size Step 1
-        If (c.contains(elementData(r)) = complement) Then
+        If (C.contains(elementData(r)) = complement) Then
             elementData(w) = elementData(r)
             w = w + 1
         End If
@@ -432,7 +432,6 @@ Private Sub subListRangeCheck(fromIndex As Long, toIndex As Long, curSize As Lon
 End Sub
 
 Public Property Get NewEnum() As IUnknown
-Attribute NewEnum.VB_UserMemId = -4
     Set NewEnum = elementData.[_NewEnum]
 End Property
 
@@ -443,8 +442,8 @@ Public Function iCollection_add(ByRef e As Variant) As Boolean
     iCollection_add = add(e)
 End Function
 
-Public Function iCollection_addAll(ByRef c As iCollection) As Boolean
-    iCollection_addAll = addAll(c)
+Public Function iCollection_addAll(ByRef C As iCollection) As Boolean
+    iCollection_addAll = addAll(C)
 End Function
 
 Public Sub iCollection_clear()
@@ -475,12 +474,12 @@ Public Function iCollection_remove(o As Variant) As Boolean
     iCollection_remove = remove(o)
 End Function
 
-Public Function iCollection_removeAll(ByRef c As iCollection) As Boolean
-    iCollection_removeAll = removeAll(c)
+Public Function iCollection_removeAll(ByRef C As iCollection) As Boolean
+    iCollection_removeAll = removeAll(C)
 End Function
 
-Public Function iCollection_retainAll(ByRef c As iCollection) As Boolean
-    iCollection_retainAll = retainAll(c)
+Public Function iCollection_retainAll(ByRef C As iCollection) As Boolean
+    iCollection_retainAll = retainAll(C)
 End Function
 
 Public Function iCollection_size() As Long
@@ -502,5 +501,6 @@ Public Property Get iIterable_NewEnum() As IUnknown
     ''specified in iIterable
     Set iIterable_NewEnum = NewEnum
 End Property
+
 
 

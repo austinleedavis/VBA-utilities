@@ -322,21 +322,21 @@ Sub removeRange(fromIndex As Long, toIndex As Long)
     size = newSize
 End Sub
 
-Public Function removeAll(c As ArrayList) As Boolean
-    If c Is Nothing Then
+Public Function removeAll(C As ArrayList) As Boolean
+    If C Is Nothing Then
         err.Raise 31004, , "Collection c Is Nothing"
     End If
-    batchRemove c, False
+    batchRemove C, False
 End Function
 
-Public Function retainAll(c As ArrayList) As Boolean
-    If c Is Nothing Then
+Public Function retainAll(C As ArrayList) As Boolean
+    If C Is Nothing Then
         err.Raise 31004, , "Collection c Is Nothing"
     End If
-    batchRemove c, True
+    batchRemove C, True
 End Function
 
-Private Function batchRemove(c As ArrayList, complement As Boolean) As Boolean
+Private Function batchRemove(C As ArrayList, complement As Boolean) As Boolean
     Dim r As Integer
     Dim w As Integer
     r = 0
@@ -346,7 +346,7 @@ Private Function batchRemove(c As ArrayList, complement As Boolean) As Boolean
     
     On Error GoTo finally
     For r = 0 To size Step 1
-        If (c.contains(elementData(r)) = complement) Then
+        If (C.contains(elementData(r)) = complement) Then
             elementData(w) = elementData(r)
             w = w + 1
         End If
@@ -423,3 +423,4 @@ End Sub
 Public Property Get NewEnum() As IUnknown
 'interface method
 End Property
+

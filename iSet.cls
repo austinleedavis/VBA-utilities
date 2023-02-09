@@ -16,7 +16,7 @@ Public Function add(ByRef e As Variant) As Boolean
     'inherited method from iCollection
 End Function
 
-Public Function addAll(ByRef c As iCollection) As Boolean
+Public Function addAll(ByRef C As iCollection) As Boolean
 'inherited method from iCollection
 End Function
 
@@ -48,11 +48,11 @@ Public Function remove(o As Variant) As Boolean
 'inherited method from iCollection
 End Function
 
-Public Function removeAll(c As iCollection) As Boolean
+Public Function removeAll(C As iCollection) As Boolean
 'inherited method from iCollection
 End Function
 
-Public Function retainAll(c As iCollection) As Boolean
+Public Function retainAll(C As iCollection) As Boolean
 'inherited method from iCollection
 End Function
 

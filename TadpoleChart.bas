@@ -13,7 +13,7 @@ Sub createTadpoleChart()
 
 
     Dim ChartObj As ChartObject
-    Set ChartObj = ActiveSheet.ChartObjects.add(Left:=20, Width:=800, Top:=20, Height:=500)
+    Set ChartObj = ActiveSheet.ChartObjects.add(left:=20, width:=800, top:=20, height:=500)
     ChartObj.Chart.ChartType = xlXYScatterSmoothNoMarkers
 
     Dim teamId As Integer
@@ -52,7 +52,7 @@ Sub createTadpoleChart()
         End With
         
         Dim headPoint As Point
-        Set headPoint = ChartSeries.Points(1)
+        Set headPoint = ChartSeries.points(1)
         headPoint.MarkerStyle = xlMarkerStyleDiamond
         headPoint.MarkerForegroundColor = ColorConstants.vbBlack
         headPoint.MarkerSize = 8
