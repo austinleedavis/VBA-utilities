@@ -1,21 +1,67 @@
 Attribute VB_Name = "tSNE"
 Option Explicit
 
-
 Private Const DBL_MAX As Double = 1.79769313486231E+308
+Private Const PI As Double = 3.14159265358979
 Private Const DBL_MIN As Double = 1 / DBL_MAX
 Private Const FLT_MAX As Double = 3.402823E+38
 Private Const FLT_MIN As Double = 3.402823E-38
+Private Const RAND_MAX As Long = 5
 
-Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
-    no_dims As Long, _
-    perplexity As Double, _
-    theta As Double, _
-    rand_seed As Long, _
-    skip_random_init As Boolean, _
+Option Base 0
+
+' Runs tSNE on X and returns the results as an Array with N rows and out_dims columns
+' Inputs:
+'   X: a 2D array with N rows
+'   out_dims: the desired number of output dimensions
+Public Function RunQuick(ByRef X() As Double, out_dims As Long) As Double()
+    
+    Dim flatX() As Double, flatY() As Double, Y() As Double, i As Long, j As Long, N As Long, D As Long
+    flatX = flatten(X)
+    N = UBound(X, 1) + 1 ' num rows in X
+    D = UBound(X, 2) + 1 ' num columns in X
+    
+    ReDim Y(0 To N - 1, 0 To out_dims - 1)
+    ReDim flatY(0 To (N * out_dims - 1))
+    
+    RunFull flatX, N, D, flatY, out_dims, (N - 1) / D - 1, 0, -1
+    
+    simpleRun = unflatten(flatY, out_dims)
+    
+End Function
+
+' Runs the tSNE algorithm. This function is exposed so users can customize the parameters of tSNE
+' Inputs:
+'   X: a 2D array with N rows
+'   out_dims: the desired number of output dimensions
+'   perplexity: (Optional)
+'   theta: (Optional)
+'   rand_seed: (Optional)
+'   skip_random_init: (Optional)
+'   max_iter: (Optional)
+'   stop_lying_iter: (Optional)
+'   mom_switch_iter: (Optional)
+Public Function Run(ByRef fullX() As Double, out_dims As Long, _
+    Optional perplexity As Double = DBL_MIN, _
+    Optional theta As Double = 0, _
+    Optional rand_seed As Long = 0, _
+    Optional skip_random_init As Boolean = False, _
     Optional max_iter As Long = 500, _
     Optional stop_lying_iter As Long = 2, _
     Optional mom_switch_iter As Long = 180)
+    
+    Dim N As Long, D As Long, Y() As Double
+    N = UBound(X, 1) + 1 ' num rows in X
+    D = UBound(X, 2) + 1 ' num columns in X
+    
+    Dim X() As Double, Y() As Double
+    X = flatten(fullX)
+    ReDim Y(0 To (N * out_dims - 1))
+    
+    
+    If perplexity = DBL_MIN Then
+        perplexity = (N - 1) / D - 1
+    End If
     
     Application.StatusBar = "Running t-SNE"
     
@@ -38,10 +84,10 @@ Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
     
     If N - 1 < 3 * perplexity Then
         Debug.Print "Perplexity too large for the number of data points!"
-        Exit Sub
+        Exit Function
     End If
     
-    Debug.Print "Using no_dims = " & no_dims & ", perplexity = " & perplexity & ", and theta = " & theta
+    Debug.Print "Using out_dims = " & out_dims & ", perplexity = " & perplexity & ", and theta = " & theta
     Dim exact As Boolean
     exact = (theta = 0#)
     
@@ -57,11 +103,11 @@ Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
     
     'allocate arrays
     Dim dY() As Double, uY() As Double, gains() As Double
-    ReDim dY(0 To N * no_dims - 1)
-    ReDim uY(0 To N * no_dims - 1)
-    ReDim gains(0 To N * no_dims - 1)
+    ReDim dY(0 To N * out_dims - 1)
+    ReDim uY(0 To N * out_dims - 1)
+    ReDim gains(0 To N * out_dims - 1)
     
-    For i = 0 To N * no_dims - 1
+    For i = 0 To N * out_dims - 1
         uY(i) = 0#
         gains(i) = 1#
     Next i
@@ -139,7 +185,7 @@ Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
     
     'initialize solution (randomly)
     If Not skip_random_init Then
-        For i = 0 To N * no_dims - 1
+        For i = 0 To N * out_dims - 1
             Y(i) = randn() * 0.0001
         Next i
     End If
@@ -161,35 +207,36 @@ Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
     
         'compute (approximate) gradient
         If exact Then
-            computeExactGradient P, Y, N, no_dims, dY
+            computeExactGradient P, Y, N, out_dims, dY
         Else
-            computeGradient P, row_P, col_P, val_P, Y, N, no_dims, dY, theta
+            computeGradient P, row_P, col_P, val_P, Y, N, out_dims, dY, theta
         End If
         
         'update gains
-        For i = 0 To N * no_dims - 1
+        For i = 0 To N * out_dims - 1
             If (sign(dY(i)) <> sign(uY(i))) Then
                 gains(i) = gains(i) + 0.2
             Else
                 gains(i) = gains(i) * 0.8
             End If
         Next i
-        For i = 0 To N * no_dims - 1
+        
+        For i = 0 To N * out_dims - 1
             If gains(i) < 0.01 Then
                 gains(i) = 0.01
             End If
         Next i
         
         'perform gradient update (with momentum and gains)
-        For i = 0 To N * no_dims - 1
+        For i = 0 To N * out_dims - 1
             uY(i) = momentum * uY(i) - eta * gains(i) * dY(i)
         Next i
-        For i = 0 To N * no_dims - 1
+        For i = 0 To N * out_dims - 1
             Y(i) = Y(i) + uY(i)
         Next i
         
         'make solution zero-mean
-        zeroMean Y, N, no_dims
+        zeroMean Y, N, out_dims
         
         'stop lying about the P-values after a while, and switch momentum
         If iter = stop_lying_iter Then
@@ -212,9 +259,9 @@ Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
             Dim C As Double
             C = 0#
             If exact Then
-                C = evaluateError(P, Y, N, no_dims)
+                C = evaluateError(P, Y, N, out_dims)
             Else
-                C = evaluateErrorApprox(row_P, col_P, val_P, Y, N, no_dims, theta) 'doing approximate computation here!
+                C = evaluateErrorApprox(row_P, col_P, val_P, Y, N, out_dims, theta) 'doing approximate computation here!
             End If
             If iter = 0 Then
                 Debug.Print "Iteration " & iter + 1 & ": error is " & C
@@ -234,14 +281,16 @@ Public Sub run(ByRef X() As Double, N As Long, D As Long, Y() As Double, _
         End If
         
     Next iter
-    
-    
 
     
     Debug.Print "Fitting performed in " & (total_time + clock.TimeElapsed) / 1000 & " seconds"
-   
-End Sub
+    
+    Run = unflatten(Y, out_dims)
+    
+End Function
 
+
+'indicates if D is positive, negative or zero
 Private Function sign(D As Double) As Long
     sign = IIf(D > 0, 1, IIf(D < 0, -1, 0))
 End Function
@@ -558,3 +607,36 @@ Private Sub computeGradient(P() As Double, inp_row_P() As Long, inp_col_P() As L
 End Sub
 
 
+
+Private Function unflatten(ByRef flatX() As Double, out_dims As Long) As Double()
+    Dim N As Long, i As Long, j As Long, X() As Double
+    N = (UBound(flatX) + 1) / out_dims
+    
+    ReDim X(0 To N - 1, 0 To out_dims - 1)
+    
+    For i = 0 To N - 1
+        For j = 0 To out_dims - 1
+            X(i, j) = flatX(i * out_dims + j)
+        Next j
+    Next i
+    
+    unflatten = X
+    
+End Function
+
+Private Function flatten(ByRef X() As Double) As Double()
+    Dim N As Long, M As Long, F() As Double, i As Long, j As Long
+    
+    N = UBound(X, 1) + 1
+    M = UBound(X, 2) + 1
+    ReDim F(0 To (M * N - 1))
+    
+    For i = 0 To N - 1
+        For j = 0 To M - 1
+            F(i * M + j) = X(i, j)
+        Next j
+    Next i
+    
+    flatten = F
+    
+End Function
