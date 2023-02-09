@@ -80,8 +80,8 @@ End Function
 
 Public Function Levenshtein(s As String, t As String)
     'Computs the Levenshtein distance between two Strings. Levenshtein distance is a metric for measuring the difference between two Strings. Informally, the Levenshtein distance between two words is the minimum number of single-character edits (insertions, deletions or substitutions) required to change one word into the other.
-    Dim v0() As Long, v1() As Long, temp() As Long, m As Long, N As Long, i As Long, j As Long, substitutionCost As Long
-    m = Len(s)
+    Dim v0() As Long, v1() As Long, temp() As Long, M As Long, N As Long, i As Long, j As Long, substitutionCost As Long
+    M = Len(s)
     N = Len(t)
     
     'create two work vectors
@@ -96,7 +96,7 @@ Public Function Levenshtein(s As String, t As String)
         v0(i) = i
     Next i
     
-    For i = 0 To m - 1
+    For i = 0 To M - 1
         'calculate v1 (current row distances) from the previous row v0
         
         'first element of v1 is A[i+1][0]

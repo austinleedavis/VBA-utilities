@@ -55,7 +55,7 @@ Public Function putKV(Key As Variant, value As Variant) As Variant
 'interface method
 End Function
 
-Public Sub putAll(m As iMap)
+Public Sub putAll(M As iMap)
 'interface method
 End Sub
 

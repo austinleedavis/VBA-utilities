@@ -57,7 +57,7 @@ End Function
 
 Public Function JaccardDistance(ByVal A As String, ByVal B As String, Optional k As Long = 5) As Double
     Dim aUb As Scripting.Dictionary, aSet As Scripting.Dictionary, bSet As Scripting.Dictionary
-    Dim m As Long 'length of A
+    Dim M As Long 'length of A
     Dim N As Long 'length of B
     Dim ngram As Variant
     Dim aNb_Size As Long
@@ -189,7 +189,7 @@ Sub FuzzyMatch_Batch()
     lev_dist As Long, _
     i As Long, _
     N As Long, _
-    m As Long, _
+    M As Long, _
     outputValues() As String
     
 
@@ -199,11 +199,11 @@ Sub FuzzyMatch_Batch()
     Set output_arr = Application.InputBox("Select Top Left corner of output range", "Obtain Range Object", Type:=8)
     
     N = input_arr.Count
-    m = search_arr.Count
+    M = search_arr.Count
     
     
-    If m > 500 Then
-        If MsgBox("The search array you provided contains " & m & " elements. Processing " & N & " input values against this search space may take a while. Do you wish to continue?", vbYesNo, "Large Selection Detected") = vbNo Then
+    If M > 500 Then
+        If MsgBox("The search array you provided contains " & M & " elements. Processing " & N & " input values against this search space may take a while. Do you wish to continue?", vbYesNo, "Large Selection Detected") = vbNo Then
             Exit Sub
         End If
     End If

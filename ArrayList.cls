@@ -424,3 +424,5 @@ Public Property Get NewEnum() As IUnknown
 'interface method
 End Property
 
+
+
